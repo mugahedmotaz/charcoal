@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { ShoppingCart, Search, Menu, X } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
-
+import Logo from "../components/logo.png"
 interface HeaderProps {
   onCartClick: () => void;
   onSearchChange: (query: string) => void;
@@ -25,11 +25,11 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center">
-              <span className="text-red-600 font-bold text-xl">🍔</span>
+            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+              <span className="text-red-600 font-bold text-xl"><img src={Logo} alt="" /></span>
             </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-yellow-200 to-yellow-400 bg-clip-text text-transparent">
-              Charcoal's
+            <h1 className="bg-white pr-2 font-bold bg-gradient-to-r from-yellow-200 to-yellow-400 bg-clip-text text-transparent">
+              شاركلز - بورتسودان
             </h1>
           </div>
 
@@ -48,8 +48,8 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
-              placeholder="ابحث عن البرجر المفضل..."
-              className="bg-transparent text-white placeholder-white/70 outline-none w-64"
+              placeholder="... ابحث عن البرجر المفضل "
+              className="bg-transparent text-white placeholder-white/70 outline-none w-64 pl-2"
             />
           </div>
 
@@ -58,8 +58,8 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
             onClick={onCartClick}
             className="relative bg-yellow-400 hover:bg-yellow-500 text-red-600 px-4 py-2 rounded-full font-bold transition-all hover:scale-105 shadow-lg"
           >
-            <ShoppingCart className="w-5 h-5 inline ml-2" />
-            السلة  
+            <ShoppingCart className="w-5 h-5 inline" />
+                <span className="mx-2">السلة </span> 
             {totalItems > 0 && (
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold animate-pulse">
                 {totalItems}

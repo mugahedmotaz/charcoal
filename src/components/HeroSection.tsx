@@ -15,7 +15,7 @@ const HeroSection: React.FC = () => {
           <div className="text-center lg:text-right">
             <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
               أطعم برجر
-              <span className="block text-yellow-300 animate-pulse"> 🍔</span>
+              <span className="block text-yellow-300 animate-pulse"> </span>
             </h1>
             <p className="text-xl lg:text-2xl mb-8 text-white/90 leading-relaxed">
               اكتشف طعم البرجر الأصيل مع وصفاتنا السرية والمكونات الطازجة
@@ -24,8 +24,8 @@ const HeroSection: React.FC = () => {
             {/* Features */}
             <div className="flex flex-wrap justify-center lg:justify-end gap-6 mb-8">
               <div className="flex items-center bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
-                <Clock className="w-5 h-5 ml-2" />
-                <span>توصيل في 20 دقيقة</span>
+                {/* <Clock className="w-5 h-5 ml-2" /> */}
+                <span>الجودة شعارنا</span>
               </div>
               <div className="flex items-center bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
                 <Star className="w-5 h-5 ml-2 text-yellow-300" />
@@ -37,7 +37,7 @@ const HeroSection: React.FC = () => {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-end">
               <button className="bg-yellow-400 hover:bg-yellow-500 text-red-600 font-bold py-4 px-8 rounded-full text-lg transition-all hover:scale-105 shadow-xl">
-                اطلب الآن 🚀
+                اطلب الآن 
               </button>
               <button className="border-2 border-white text-white hover:bg-white hover:text-red-600 font-bold py-4 px-8 rounded-full text-lg transition-all hover:scale-105">
                 تصفح القائمة

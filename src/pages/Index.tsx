@@ -9,6 +9,8 @@ import CartSidebar from '../components/CartSidebar';
 import CategoryFilter from '../components/CategoryFilter';
 import { burgerData } from '../data/burgers';
 import { BurgerItem } from '../types/burger';
+import Logo from "../components/logo.png"
+import { Facebook, Instagram,} from 'lucide-react';
 
 const categories = [
   { id: 'all', name: 'الكل', icon: '🍽️' },
@@ -128,10 +130,14 @@ const Index: React.FC = () => {
         <footer className="bg-gray-800 text-white py-12 mt-16">
           <div className="container mx-auto px-4 text-center">
             <div className="flex items-center justify-center mb-4">
-              <div className="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center ml-3">
-                <span className="text-red-600 font-bold text-2xl">🍔</span>
+              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center ml-3">
+                <span className="text-red-600 font-bold text-2xl"><img src={Logo} alt="" /></span>
               </div>
-              <h2 className="text-2xl font-bold">Charcoal's</h2>
+              <h1 className="font-bold">شاركلز - بورتسودان</h1>
+            </div>
+            <div className='flex justify-center items-center my-2 gap-2'>
+              <Facebook className=' bg-yellow-400 w-8 h-8 p-1 rounded-sm '/>
+              <Instagram className=' bg-yellow-400 w-8 h-8 p-1 rounded-sm '/>
             </div>
             <p className="text-gray-400 mb-6">
               أفضل برجر في المدينة - طعم لا يُنسى مع كل قضمة
