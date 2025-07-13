@@ -1,14 +1,15 @@
 
 import React, { useState } from 'react';
-import { ShoppingCart, Search, Menu, X } from 'lucide-react';
+import { ShoppingCart, Search, Menu, X, Settings } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import Logo from "../components/logo.png"
 interface HeaderProps {
   onCartClick: () => void;
   onSearchChange: (query: string) => void;
+  onAdminClick: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
+const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange, onAdminClick }) => {
   const { totalItems } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -39,6 +40,13 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
             <a href="#menu" className="hover:text-yellow-300 transition-colors font-medium">القائمة</a>
             <a href="#offers" className="hover:text-yellow-300 transition-colors font-medium">العروض</a>
             <a href="#contact" className="hover:text-yellow-300 transition-colors font-medium">اتصل بنا</a>
+            <button
+              onClick={onAdminClick}
+              className="hover:text-yellow-300 transition-colors font-medium flex items-center gap-2"
+            >
+              <Settings className="w-4 h-4" />
+              الإدارة
+            </button>
           </nav>
 
           {/* Search Bar */}
@@ -95,6 +103,13 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
                 <a href="#menu" className="hover:text-yellow-300 transition-colors font-medium py-2">القائمة</a>
                 <a href="#offers" className="hover:text-yellow-300 transition-colors font-medium py-2">العروض</a>
                 <a href="#contact" className="hover:text-yellow-300 transition-colors font-medium py-2">اتصل بنا</a>
+                <button
+                  onClick={onAdminClick}
+                  className="hover:text-yellow-300 transition-colors font-medium py-2 text-right flex items-center gap-2"
+                >
+                  <Settings className="w-4 h-4" />
+                  الإدارة
+                </button>
               </nav>
             </div>
           </div>

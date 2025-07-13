@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
 import { CartContextType, CartItem, BurgerItem, BurgerExtra } from '../types/burger';
 
@@ -14,25 +13,51 @@ interface CartState {
   items: CartItem[];
 }
 
+// دالة لإنشاء مفتاح فريد للمنتج بناءً على المنتج والإضافات
+const createItemKey = (burger: BurgerItem, extras: BurgerExtra[]): string => {
+  const extrasIds = extras.map(extra => extra.id).sort().join(',');
+  return `${burger.id}-${extrasIds}`;
+};
+
 const cartReducer = (state: CartState, action: CartAction): CartState => {
   switch (action.type) {
     case 'ADD_ITEM':
       const { burger, extras } = action.payload;
       const extrasPrice = extras.reduce((sum, extra) => sum + extra.price, 0);
       const totalPrice = burger.price + extrasPrice;
+      const itemKey = createItemKey(burger, extras);
       
-      const newItem: CartItem = {
-        id: `${burger.id}-${Date.now()}`,
-        burger,
-        quantity: 1,
-        selectedExtras: extras,
-        totalPrice
-      };
+      // البحث عن منتج مشابه موجود في السلة
+      const existingItemIndex = state.items.findIndex(item => {
+        const existingKey = createItemKey(item.burger, item.selectedExtras);
+        return existingKey === itemKey;
+      });
       
-      return {
-        ...state,
-        items: [...state.items, newItem]
-      };
+      if (existingItemIndex !== -1) {
+        // إذا كان المنتج موجود، زيادة الكمية
+        return {
+          ...state,
+          items: state.items.map((item, index) =>
+            index === existingItemIndex
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          )
+        };
+      } else {
+        // إذا لم يكن موجود، إضافة منتج جديد
+        const newItem: CartItem = {
+          id: `${itemKey}-${Date.now()}`,
+          burger,
+          quantity: 1,
+          selectedExtras: extras,
+          totalPrice
+        };
+        
+        return {
+          ...state,
+          items: [...state.items, newItem]
+        };
+      }
     
     case 'REMOVE_ITEM':
       return {

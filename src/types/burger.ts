@@ -35,3 +35,21 @@ export interface CartContextType {
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
 }
+
+export interface Category {
+  id: string;
+  name: string;
+  icon: string;
+  description?: string;
+}
+
+export interface AdminContextType {
+  burgers: BurgerItem[];
+  categories: Category[];
+  addBurger: (burger: Omit<BurgerItem, 'id'>) => void;
+  updateBurger: (id: string, burger: Partial<BurgerItem>) => void;
+  deleteBurger: (id: string) => void;
+  addCategory: (category: Omit<Category, 'id'>) => void;
+  updateCategory: (id: string, category: Partial<Category>) => void;
+  deleteCategory: (id: string) => void;
+}
