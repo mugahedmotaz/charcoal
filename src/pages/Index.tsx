@@ -148,8 +148,8 @@ const IndexContent: React.FC = () => {
           </div>
           <div className="mt-8 pt-8 border-t border-gray-700 text-gray-400 text-sm">
             © 2024 Charcoal's. جميع الحقوق محفوظة.
-            Development by Mugahed Motaz
           </div>
+          <p className='mt-4'> Development by <span className='bg-gradient-to-br from-red-500 to-orange-500 p-1 rounded-sm mt-2'>Mugahed Motaz</span></p>
         </div>
       </footer>
 
