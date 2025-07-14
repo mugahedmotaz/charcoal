@@ -32,7 +32,7 @@ const HeroSection: React.FC = () => {
                 <br />
                 <span className="relative">
                   <span className="bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
-                    في المدينة
+                    في بورتسـودان
                   </span>
                   <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-red-500 to-orange-500 rounded-full"></div>
                 </span>
@@ -46,8 +46,8 @@ const HeroSection: React.FC = () => {
             <div className="flex flex-wrap justify-center lg:justify-start gap-8">
               {[
                 { icon: '⭐', value: '4.9', label: 'تقييم العملاء' },
-                { icon: '🍔', value: '1000+', label: 'برجر يومياً' },
-                { icon: '⚡', value: '15', label: 'دقيقة تحضير' }
+                { icon: '🍔', value: '400+', label: 'برجر يومياً' },
+                { icon: '⚡', value: '30', label: 'دقيقة تحضير' }
               ].map((stat, index) => (
                 <div key={index} className="text-center">
                   <div className="text-2xl mb-2">{stat.icon}</div>
