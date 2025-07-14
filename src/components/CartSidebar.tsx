@@ -45,7 +45,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
             </div>
             
             {/* Delivery Info */}
-            <div className="flex items-center gap-4 text-sm text-white/90">
+            {/* <div className="flex items-center gap-4 text-sm text-white/90">
               <div className="flex items-center gap-1">
                 <Clock className="w-4 h-4" />
                 <span>15-20 دقيقة</span>
@@ -54,12 +54,12 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
                 <MapPin className="w-4 h-4" />
                 <span>توصيل مجاني</span>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto" style={{ height: 'calc(100vh - 280px)' }}>
+        <div className="flex-1 overflow-y-auto" style={{ height: 'calc(100vh - 300px)' }}>
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-gray-500 p-8">
               <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
@@ -165,7 +165,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
 
         {/* Footer */}
         {items.length > 0 && (
-          <div className="border-t border-gray-200 p-6 bg-white">
+          <div className=" border-t border-gray-200 p-6 bg-white fixed  left-0  w-full max-w-md" style={{ top: '430px' }}>
             {/* Order Summary */}
             <div className="space-y-3 mb-6">
               <div className="flex justify-between text-gray-600">
@@ -191,12 +191,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
             </button>
             
             {/* Continue Shopping */}
-            <button 
-              onClick={onClose}
-              className="w-full mt-3 text-gray-600 hover:text-gray-800 font-medium py-2 transition-colors"
-            >
-              متابعة التسوق
-            </button>
           </div>
         )}
       </div>

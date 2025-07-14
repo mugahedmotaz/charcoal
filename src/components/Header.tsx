@@ -125,7 +125,7 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="lg:hidden p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300"
             >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6 mr-2" />}
             </button>
           </div>
         </div>
