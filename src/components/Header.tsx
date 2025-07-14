@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ShoppingCart, Search, Menu, X, Settings, Bell, User } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import Logo from "../components/logo.png"
