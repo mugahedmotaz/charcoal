@@ -102,7 +102,7 @@ const AdminContent: React.FC = () => {
               onClick={() => setActiveTab(item.id as any)}
               className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all duration-300 group ${
                 activeTab === item.id
-                  ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg'
+                  ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg'
                   : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'
               }`}
             >
@@ -143,7 +143,7 @@ const AdminContent: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="mr-72">
+      <div className="ml-72">
         {/* Top Bar */}
         <div className="bg-white border-b border-gray-200 p-6">
           <div className="flex items-center justify-between">

@@ -28,8 +28,8 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
           {/* Logo Section */}
           <div className="flex items-center space-x-3">
             <div className="relative">
-              <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                <img src={Logo} alt="Logo" className="w-8 h-8" />
+              <div className=" ml-2 w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                <img src={Logo} alt="Logo" className="w-12" />
               </div>
               <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full animate-pulse"></div>
             </div>
@@ -83,19 +83,19 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
           {/* Action Buttons */}
           <div className="flex items-center space-x-4">
             {/* Notifications */}
-            <button className="relative p-3 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300">
-              <Bell className="w-6 h-6" />
-              <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full"></span>
-            </button>
+            {/* <button className="relative p-3 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300"> */}
+              {/* <Bell className="w-6 h-6" /> */}
+              {/* <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full"></span> */}
+            {/* </button> */}
 
             {/* Admin Panel */}
-            <button
+            {/* <button
               onClick={() => navigate('/admin')}
               className="hidden md:flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300 font-medium"
             >
               <Settings className="w-5 h-5" />
               الإدارة
-            </button>
+            </button> */}
 
             {/* Cart Button */}
             <button
@@ -114,11 +114,11 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
             </button>
 
             {/* Profile */}
-            <button className="hidden md:flex items-center gap-2 p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300">
+            {/* <button className="hidden md:flex items-center gap-2 p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300">
               <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center">
                 <User className="w-4 h-4 text-white" />
               </div>
-            </button>
+            </button> */}
 
             {/* Mobile Menu Button */}
             <button
@@ -164,13 +164,13 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
                   {item.name}
                 </a>
               ))}
-              <button
+              {/* <button
                 onClick={() => navigate('/admin')}
                 className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300 font-medium w-full text-right"
               >
                 <Settings className="w-5 h-5" />
                 الإدارة
-              </button>
+              </button> */}
             </nav>
           </div>
         )}
