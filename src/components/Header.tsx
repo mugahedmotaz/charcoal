@@ -6,11 +6,11 @@ import Logo from "../components/logo.png"
 interface HeaderProps {
   onCartClick: () => void;
   onSearchChange: (query: string) => void;
-  onAdminClick: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange, onAdminClick }) => {
+const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
   const { totalItems } = useCart();
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -89,7 +89,7 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange, onAdminCli
 
             {/* Admin Panel */}
             <button
-              onClick={onAdminClick}
+              onClick={() => navigate('/admin')}
               className="hidden md:flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300 font-medium"
             >
               <Settings className="w-5 h-5" />
@@ -164,7 +164,7 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange, onAdminCli
                 </a>
               ))}
               <button
-                onClick={onAdminClick}
+                onClick={() => navigate('/admin')}
                 className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300 font-medium w-full text-right"
               >
                 <Settings className="w-5 h-5" />

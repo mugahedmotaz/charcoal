@@ -8,7 +8,6 @@ import BurgerCard from '../components/BurgerCard';
 import BurgerDetails from '../components/BurgerDetails';
 import CartSidebar from '../components/CartSidebar';
 import CategoryFilter from '../components/CategoryFilter';
-import AdminPanel from '../components/admin/AdminPanel';
 import { useAdmin } from '../contexts/AdminContext';
 import { BurgerItem } from '../types/burger';
 import Logo from "../components/logo.png"
@@ -18,7 +17,6 @@ const IndexContent: React.FC = () => {
   const { burgers, categories } = useAdmin();
   const [selectedBurger, setSelectedBurger] = useState<BurgerItem | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
 
@@ -46,7 +44,6 @@ const IndexContent: React.FC = () => {
       <Header 
         onCartClick={() => setIsCartOpen(true)}
         onSearchChange={setSearchQuery}
-        onAdminClick={() => setIsAdminOpen(true)}
       />
 
       {/* Hero Section */}
@@ -165,11 +162,6 @@ const IndexContent: React.FC = () => {
       <CartSidebar
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
-      />
-
-      <AdminPanel
-        isOpen={isAdminOpen}
-        onClose={() => setIsAdminOpen(false)}
       />
     </div>
   );
