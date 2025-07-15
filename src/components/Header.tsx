@@ -44,10 +44,10 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8">
             {[
-              { name: 'الرئيسية', href: '#home', active: true },
-              { name: 'القائمة', href: '#menu' },
-              { name: 'العروض', href: '#offers' },
-              { name: 'اتصل بنا', href: '#contact' }
+              { name: 'الرئيسية', href: '/home', active: true },
+              { name: 'القائمة', href: '/menu' },
+              { name: 'العروض', href: '/offers' },
+              { name: 'اتصل بنا', href: '/contact' }
             ].map((item) => (
               <a
                 key={item.name}
@@ -100,7 +100,7 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
             {/* Cart Button */}
             <button
               onClick={onCartClick}
-              className="relative bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white px-6 py-3 rounded-xl font-bold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+              className="relative bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white px-6 py-3 rounded-xl font-bold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl ml-4"
             >
               <div className="flex items-center gap-2">
                 <ShoppingCart className="w-5 h-5" />
@@ -123,9 +123,9 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300"
+              className="lg:hidden p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300 "
             >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6 mr-2" />}
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6 " />}
             </button>
           </div>
         </div>

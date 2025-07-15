@@ -105,7 +105,7 @@ const BurgerCard: React.FC<BurgerCardProps> = ({ burger, onDetailsClick }) => {
         </h3>
         
         {/* Description */}
-        <p className="text-gray-600 text-sm mb-4 leading-relaxed line-clamp-2 h-10">
+        <p className="text-gray-600 text-sm mb-4 leading-relaxed line-clamp-2 h-12">
           {burger.description}
         </p>
 

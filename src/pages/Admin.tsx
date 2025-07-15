@@ -28,6 +28,7 @@ import {
   Star,
   Activity,
   Home,
+  LogOutIcon,
   Menu
 } from 'lucide-react';
 import { AdminProvider, useAdmin } from '../contexts/AdminContext';
@@ -108,8 +109,9 @@ const AdminContent: React.FC = () => {
             { id: 'products', name: 'المنتجات', icon: Package, badge: stats.totalProducts },
             { id: 'categories', name: 'الأصناف', icon: Tag, badge: stats.totalCategories },
             { id: 'orders', name: 'الطلبات', icon: ShoppingCart, badge: stats.todayOrders },
-            { id: 'analytics', name: 'التحليلات', icon: TrendingUp, badge: null },
+            // { id: 'analytics', name: 'التحليلات', icon: TrendingUp, badge: null },
             { id: 'settings', name: 'الإعدادات', icon: Settings, badge: null },
+            { id: 'logout', name: 'تسجيل الخروج', icon: LogOutIcon, badge: null },
           ].map((item) => (
             <button
               key={item.id}
