@@ -10,7 +10,6 @@ interface CartSidebarProps {
 const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
   const { items, totalPrice, updateQuantity, removeItem, clearCart } = useCart();
 
-  /* ======================= حالة بيانات العميل ======================= */
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
@@ -18,28 +17,32 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  /* ======================= توليد رسالة واتساب ======================= */
   const handleCheckout = () => {
-    let message = `🛒 *طلب جديد من الموقع*\n\n`;
+    let message = `📦 *طلب جديد من موقع شاركلز*\n`;
+    message += `——————————————\n\n`;
+
     items.forEach((item, i) => {
       message += `🍔 *${i + 1}. ${item.burger.name}*\n`;
       message += `الكمية: ${item.quantity}\n`;
-      message += `السعر: ${item.burger.price} ج.س\n`;
+      message += `السعر الفردي: ${item.burger.price} ج.س\n`;
       if (item.selectedExtras.length)
-        message += `الإضافات: ${item.selectedExtras.map(e => e.name).join(', ')}\n`;
-      message += '\n';
+        message += `➕ إضافات: ${item.selectedExtras.map(e => e.name).join(', ')}\n`;
+      message += `💰 الإجمالي: ${item.totalPrice * item.quantity} ج.س\n`;
+      message += `——————————————\n`;
     });
-    message += `🔢 *الإجمالي:* ${totalPrice} ج.س\n\n`;
-    message += `📦 *تفـاصيل العميل:*\n`;
-    message += `الاسم: ${customerName || '---'}\n`;
-    message += `الهاتف: ${customerPhone || '---'}\n`;
-    message += `العنوان: ${customerAddress || '---'}\n`;
 
-    const whatsappNumber = '249920486301'; // ← عدّل الرقم
+    message += `\n📊 *الإجمالي النهائي:* ${totalPrice} ج.س\n`;
+    message += `🚚 *التوصيل:* مجاني\n\n`;
+
+    message += `👤 *بيانات العميل:*\n`;
+    message += `• الاسم: ${customerName || '---'}\n`;
+    message += `• الهاتف: ${customerPhone || '---'}\n`;
+    message += `• العنوان: ${customerAddress || '---'}\n`;
+
+    const whatsappNumber = '249920486301';
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
   };
 
-  /* ======================= واجهة المكوّن ======================= */
   return (
     <>
       {/* Overlay */}
@@ -48,7 +51,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
       {/* Sidebar */}
       <div className="fixed inset-y-0 left-0 z-50 w-full max-w-md bg-white shadow-2xl flex flex-col">
         {/* Header */}
-        <div className="bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 text-white p-5">
+        <div className="bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 text-white p-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-white/20 rounded-xl">
@@ -99,7 +102,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
                     key={item.id}
                     className="flex gap-3 bg-gray-50 rounded-2xl p-4 border border-gray-100"
                   >
-                    {/* صورة */}
                     <div className="relative shrink-0">
                       <img
                         src={item.burger.image}
@@ -110,7 +112,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
                         {item.quantity}
                       </span>
                     </div>
-                    {/* تفاصيل */}
                     <div className="flex-1">
                       <h4 className="font-bold text-gray-800">{item.burger.name}</h4>
                       <p className="text-sm text-gray-600 mb-1">
@@ -122,7 +123,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
                           {item.selectedExtras.map(e => e.name).join(', ')}
                         </p>
                       )}
-                      {/* تحكم بالكمية */}
                       <div className="flex justify-between items-center">
                         <div className="flex items-center gap-2">
                           <button
@@ -161,15 +161,11 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
 
         {/* فوتر الفاتورة */}
         {items.length > 0 && (
-          <div
-            className="w-full max-w-md bg-white border-t shadow-md p-4 pb-[calc(16px+env(safe-area-inset-bottom))] fixed bottom-0 left-0"
-          >
-            {/* المجموع */}
+          <div className="w-full max-w-md bg-white border-t shadow-md p-4 fixed bottom-0 left-0">
             <div className="flex justify-between mb-3 text-gray-700">
               <span>الإجمالي</span>
               <span className="font-bold text-red-600">{totalPrice} ج.س</span>
             </div>
-            {/* زر إتمام الطلب */}
             <button
               onClick={() => setIsModalOpen(true)}
               className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 py-3 rounded-xl text-white font-bold"
@@ -203,7 +199,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
                   placeholder="رقم الهاتف"
                   value={customerPhone}
                   onChange={e => setCustomerPhone(e.target.value)}
-                  className="w-full border rounded-lg px-4 py-2  outline-0 text-right"
+                  className="w-full border rounded-lg px-4 py-2 outline-0 text-right"
                 />
                 <textarea
                   placeholder="العنوان بالتفصيل"
@@ -215,9 +211,9 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
                   onClick={() => {
                     handleCheckout();
                     setIsModalOpen(false);
-                    onClose(); // إغلاق السلة بعد إرسال الطلب
+                    onClose();
                   }}
-                  className="w-full bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-500 hover:to-orange-600 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2"
+                  className="w-full bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2"
                 >
                   إرسال الطلب عبر واتساب
                 </button>
