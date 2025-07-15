@@ -26,10 +26,13 @@ import {
   Calendar,
   Clock,
   Star,
-  Activity
+  Activity,
+  Home,
+  Menu
 } from 'lucide-react';
 import { AdminProvider, useAdmin } from '../contexts/AdminContext';
 import { BurgerItem, Category } from '../types/burger';
+import Logo from "../components/logo.png";
 
 const AdminDashboard: React.FC = () => {
   return (
@@ -46,6 +49,7 @@ const AdminContent: React.FC = () => {
   const [editingItem, setEditingItem] = useState<BurgerItem | Category | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // إحصائيات وهمية للعرض
   const stats = {
@@ -71,24 +75,34 @@ const AdminContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50">
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <div className="fixed left-0 top-0 h-full w-72 bg-white shadow-2xl border-r border-gray-200 z-40">
+      <div className={`fixed left-0 top-0 h-full w-80 bg-white shadow-2xl border-r border-gray-200 z-50 transform transition-transform duration-300 ${
+        isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      } lg:translate-x-0`}>
         {/* Logo */}
-        <div className="p-6 border-b border-gray-200">
+        <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-red-500 to-orange-500">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center">
-              <BarChart3 className="w-7 h-7 text-white" />
+            <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-lg">
+              <img src={Logo} alt="Logo" className="w-10 h-10" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-800">لوحة الإدارة</h1>
-              <p className="text-sm text-gray-500">شاركلز - بورتسودان</p>
+              <h1 className="text-xl font-bold text-white">لوحة الإدارة</h1>
+              <p className="text-white/80 text-sm">شاركلز - بورتسودان</p>
             </div>
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="p-4 space-y-2">
+        <nav className="p-4 space-y-2 flex-1 overflow-y-auto">
           {[
             { id: 'dashboard', name: 'الرئيسية', icon: BarChart3, badge: null },
             { id: 'products', name: 'المنتجات', icon: Package, badge: stats.totalProducts },
@@ -99,20 +113,23 @@ const AdminContent: React.FC = () => {
           ].map((item) => (
             <button
               key={item.id}
-              onClick={() => setActiveTab(item.id as any)}
+              onClick={() => {
+                setActiveTab(item.id as any);
+                setIsSidebarOpen(false);
+              }}
               className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all duration-300 group ${
                 activeTab === item.id
-                  ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg'
-                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'
+                  ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg transform scale-105'
+                  : 'text-gray-600 hover:bg-gradient-to-r hover:from-red-50 hover:to-orange-50 hover:text-red-600'
               }`}
             >
               <div className="flex items-center gap-3">
-                <item.icon className={`w-5 h-5 ${activeTab === item.id ? 'text-white' : 'text-gray-500 group-hover:text-gray-700'}`} />
+                <item.icon className={`w-5 h-5 ${activeTab === item.id ? 'text-white' : 'text-gray-500 group-hover:text-red-500'}`} />
                 <span className="font-medium">{item.name}</span>
               </div>
               {item.badge && (
                 <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                  activeTab === item.id ? 'bg-white/20 text-white' : 'bg-blue-100 text-blue-600'
+                  activeTab === item.id ? 'bg-white/20 text-white' : 'bg-red-100 text-red-600'
                 }`}>
                   {item.badge}
                 </span>
@@ -122,9 +139,9 @@ const AdminContent: React.FC = () => {
         </nav>
 
         {/* User Info */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
+        <div className="p-4 border-t border-gray-200 bg-gray-50">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center">
               <span className="text-white font-bold">أ</span>
             </div>
             <div className="flex-1">
@@ -143,55 +160,63 @@ const AdminContent: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="ml-72">
+      <div className="lg:mr-80">
         {/* Top Bar */}
-        <div className="bg-white border-b border-gray-200 p-6">
+        <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200 p-6 sticky top-0 z-30">
           <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-800">
-                {activeTab === 'dashboard' && 'لوحة المعلومات'}
-                {activeTab === 'products' && 'إدارة المنتجات'}
-                {activeTab === 'categories' && 'إدارة الأصناف'}
-                {activeTab === 'orders' && 'إدارة الطلبات'}
-                {activeTab === 'analytics' && 'التحليلات والتقارير'}
-                {activeTab === 'settings' && 'إعدادات النظام'}
-              </h2>
-              <p className="text-gray-600 mt-1">
-                {new Date().toLocaleDateString('ar-SA', { 
-                  weekday: 'long', 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
-                })}
-              </p>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setIsSidebarOpen(true)}
+                className="lg:hidden p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+              >
+                <Menu className="w-6 h-6" />
+              </button>
+              <div>
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+                  {activeTab === 'dashboard' && 'لوحة المعلومات'}
+                  {activeTab === 'products' && 'إدارة المنتجات'}
+                  {activeTab === 'categories' && 'إدارة الأصناف'}
+                  {activeTab === 'orders' && 'إدارة الطلبات'}
+                  {activeTab === 'analytics' && 'التحليلات والتقارير'}
+                  {activeTab === 'settings' && 'إعدادات النظام'}
+                </h2>
+                <p className="text-gray-600 mt-1">
+                  {new Date().toLocaleDateString('ar-SA', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}
+                </p>
+              </div>
             </div>
 
             <div className="flex items-center gap-4">
               {/* Search */}
-              <div className="relative">
+              <div className="relative hidden md:block">
                 <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="البحث..."
-                  className="w-80 pl-4 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-right"
+                  className="w-80 pl-4 pr-12 py-3 bg-white/50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-right backdrop-blur-sm"
                 />
               </div>
 
               {/* Notifications */}
-              <button className="relative p-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-2xl transition-colors">
+              <button className="relative p-3 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-2xl transition-colors">
                 <Bell className="w-6 h-6" />
-                <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
               </button>
 
               {/* View Site */}
               <button
                 onClick={() => navigate('/')}
-                className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl hover:from-green-600 hover:to-emerald-700 transition-all font-medium"
+                className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-2xl hover:from-red-600 hover:to-orange-600 transition-all font-medium shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                <Eye className="w-5 h-5" />
-                عرض الموقع
+                <Home className="w-5 h-5" />
+                <span className="hidden sm:inline">عرض الموقع</span>
               </button>
             </div>
           </div>
@@ -302,7 +327,7 @@ const DashboardContent: React.FC<{ stats: any; recentOrders: any[] }> = ({ stats
             textColor: 'text-yellow-600'
           },
         ].map((stat, index) => (
-          <div key={index} className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+          <div key={index} className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 hover:scale-105">
             <div className="flex items-center justify-between mb-4">
               <div className={`p-3 rounded-2xl ${stat.bgColor}`}>
                 <stat.icon className={`w-6 h-6 ${stat.textColor}`} />
@@ -320,13 +345,13 @@ const DashboardContent: React.FC<{ stats: any; recentOrders: any[] }> = ({ stats
       {/* Charts and Recent Activity */}
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Sales Chart */}
-        <div className="lg:col-span-2 bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
+        <div className="lg:col-span-2 bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-lg border border-white/20">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="text-xl font-bold text-gray-800">المبيعات الأسبوعية</h3>
               <p className="text-gray-600">آخر 7 أيام</p>
             </div>
-            <button className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">
+            <button className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white hover:from-red-600 hover:to-orange-600 rounded-xl transition-all">
               <Download className="w-4 h-4" />
               تصدير
             </button>
@@ -341,7 +366,7 @@ const DashboardContent: React.FC<{ stats: any; recentOrders: any[] }> = ({ stats
                   <span className="w-16 text-sm text-gray-600">{day}</span>
                   <div className="flex-1 bg-gray-100 rounded-full h-3 overflow-hidden">
                     <div 
-                      className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full transition-all duration-1000"
+                      className="h-full bg-gradient-to-r from-red-500 to-orange-500 rounded-full transition-all duration-1000"
                       style={{ width: `${value}%` }}
                     ></div>
                   </div>
@@ -353,18 +378,18 @@ const DashboardContent: React.FC<{ stats: any; recentOrders: any[] }> = ({ stats
         </div>
 
         {/* Recent Orders */}
-        <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-lg border border-white/20">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-bold text-gray-800">الطلبات الأخيرة</h3>
-            <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">
+            <button className="text-red-600 hover:text-red-700 text-sm font-medium">
               عرض الكل
             </button>
           </div>
           
           <div className="space-y-4">
             {recentOrders.slice(0, 4).map((order) => (
-              <div key={order.id} className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl transition-colors">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+              <div key={order.id} className="flex items-center gap-3 p-3 hover:bg-red-50 rounded-xl transition-colors">
+                <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center">
                   <span className="text-white font-bold text-sm">{order.customer[0]}</span>
                 </div>
                 <div className="flex-1">
@@ -388,7 +413,7 @@ const DashboardContent: React.FC<{ stats: any; recentOrders: any[] }> = ({ stats
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
+      <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-lg border border-white/20">
         <h3 className="text-xl font-bold text-gray-800 mb-6">إجراءات سريعة</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
@@ -399,7 +424,7 @@ const DashboardContent: React.FC<{ stats: any; recentOrders: any[] }> = ({ stats
           ].map((action, index) => (
             <button
               key={index}
-              className="flex flex-col items-center gap-3 p-6 bg-gray-50 hover:bg-gray-100 rounded-2xl transition-all duration-300 hover:scale-105"
+              className="flex flex-col items-center gap-3 p-6 bg-white/50 hover:bg-white/80 rounded-2xl transition-all duration-300 hover:scale-105 border border-white/20"
             >
               <div className={`p-3 rounded-2xl bg-gradient-to-r ${action.color}`}>
                 <action.icon className="w-6 h-6 text-white" />
@@ -413,7 +438,7 @@ const DashboardContent: React.FC<{ stats: any; recentOrders: any[] }> = ({ stats
   );
 };
 
-// Products Content Component
+// Products Content Component (keeping the same structure but with updated styling)
 const ProductsContent: React.FC<{
   burgers: BurgerItem[];
   categories: Category[];
@@ -459,10 +484,10 @@ const ProductsContent: React.FC<{
   if (editingItem || isAddingNew) {
     return (
       <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-3xl shadow-lg p-8 border border-gray-100">
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg p-8 border border-white/20">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl">
+              <div className="p-3 bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl">
                 {editingItem ? <Edit className="w-6 h-6 text-white" /> : <Plus className="w-6 h-6 text-white" />}
               </div>
               <div>
@@ -491,7 +516,7 @@ const ProductsContent: React.FC<{
                     type="text"
                     value={formData.name || ''}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-right"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-right bg-white/50 backdrop-blur-sm"
                     placeholder="مثال: برجر كلاسيك"
                     required
                   />
@@ -504,7 +529,7 @@ const ProductsContent: React.FC<{
                   <textarea
                     value={formData.description || ''}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-right"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-right bg-white/50 backdrop-blur-sm"
                     rows={4}
                     placeholder="وصف مفصل للمنتج..."
                     required
@@ -520,7 +545,7 @@ const ProductsContent: React.FC<{
                       type="number"
                       value={formData.price || 0}
                       onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-right"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-right bg-white/50 backdrop-blur-sm"
                       min="0"
                       required
                     />
@@ -533,7 +558,7 @@ const ProductsContent: React.FC<{
                     <select
                       value={formData.category || 'burger'}
                       onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-right"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-right bg-white/50 backdrop-blur-sm"
                     >
                       {categories.map((category) => (
                         <option key={category.id} value={category.id}>
@@ -550,7 +575,7 @@ const ProductsContent: React.FC<{
                       type="checkbox"
                       checked={formData.popular || false}
                       onChange={(e) => setFormData({ ...formData, popular: e.target.checked })}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      className="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
                     />
                     <span className="text-sm font-medium text-gray-700">منتج مميز</span>
                   </label>
@@ -576,7 +601,7 @@ const ProductsContent: React.FC<{
                       type="url"
                       value={formData.image || ''}
                       onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-right"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-right bg-white/50 backdrop-blur-sm"
                       placeholder="https://example.com/image.jpg"
                       required
                     />
@@ -599,10 +624,10 @@ const ProductsContent: React.FC<{
                   </div>
                 </div>
 
-                <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4">
+                <div className="bg-red-50 border border-red-200 rounded-2xl p-4">
                   <div className="flex items-start gap-3">
-                    <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
-                    <div className="text-sm text-blue-800">
+                    <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
+                    <div className="text-sm text-red-800">
                       <p className="font-medium mb-1">نصائح للصورة:</p>
                       <ul className="space-y-1 text-xs">
                         <li>• استخدم صور عالية الجودة</li>
@@ -618,7 +643,7 @@ const ProductsContent: React.FC<{
             <div className="flex gap-4 pt-6 border-t border-gray-200">
               <button
                 type="submit"
-                className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 px-6 rounded-2xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 font-semibold flex items-center justify-center gap-2"
+                className="flex-1 bg-gradient-to-r from-red-600 to-orange-600 text-white py-4 px-6 rounded-2xl hover:from-red-700 hover:to-orange-700 transition-all duration-300 font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
               >
                 <Save className="w-5 h-5" />
                 حفظ المنتج
@@ -647,7 +672,7 @@ const ProductsContent: React.FC<{
         </div>
         <button
           onClick={onAddNew}
-          className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-2xl hover:from-green-600 hover:to-emerald-600 transition-all duration-300 font-semibold flex items-center gap-2 shadow-lg hover:shadow-xl"
+          className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-2xl hover:from-green-600 hover:to-emerald-600 transition-all duration-300 font-semibold flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
         >
           <Plus className="w-5 h-5" />
           إضافة منتج جديد
@@ -655,19 +680,19 @@ const ProductsContent: React.FC<{
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-        <div className="flex items-center gap-4">
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
+        <div className="flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-2">
             <Filter className="w-5 h-5 text-gray-500" />
             <span className="font-medium text-gray-700">تصفية حسب الصنف:</span>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <button
               onClick={() => setSelectedCategory('all')}
               className={`px-4 py-2 rounded-xl font-medium transition-all ${
                 selectedCategory === 'all'
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg'
+                  : 'bg-white/50 text-gray-600 hover:bg-white/80 border border-gray-200'
               }`}
             >
               الكل ({burgers.length})
@@ -678,8 +703,8 @@ const ProductsContent: React.FC<{
                 onClick={() => setSelectedCategory(category.id)}
                 className={`px-4 py-2 rounded-xl font-medium transition-all ${
                   selectedCategory === category.id
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg'
+                    : 'bg-white/50 text-gray-600 hover:bg-white/80 border border-gray-200'
                 }`}
               >
                 {category.name} ({burgers.filter(b => b.category === category.id).length})
@@ -692,7 +717,7 @@ const ProductsContent: React.FC<{
       {/* Products Grid */}
       <div className="grid gap-6">
         {filteredBurgers.map((burger) => (
-          <div key={burger.id} className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border border-gray-100">
+          <div key={burger.id} className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border border-white/20 hover:scale-[1.02]">
             <div className="flex items-center gap-6">
               <div className="relative">
                 <img
@@ -731,13 +756,13 @@ const ProductsContent: React.FC<{
                   <div className="flex gap-2">
                     <button
                       onClick={() => onEdit(burger)}
-                      className="bg-blue-500 text-white p-3 rounded-xl hover:bg-blue-600 transition-colors shadow-md hover:shadow-lg"
+                      className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white p-3 rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all shadow-md hover:shadow-lg transform hover:scale-105"
                     >
                       <Edit className="w-5 h-5" />
                     </button>
                     <button
                       onClick={() => onDelete(burger.id)}
-                      className="bg-red-500 text-white p-3 rounded-xl hover:bg-red-600 transition-colors shadow-md hover:shadow-lg"
+                      className="bg-gradient-to-r from-red-500 to-pink-500 text-white p-3 rounded-xl hover:from-red-600 hover:to-pink-600 transition-all shadow-md hover:shadow-lg transform hover:scale-105"
                     >
                       <Trash2 className="w-5 h-5" />
                     </button>
@@ -760,7 +785,7 @@ const ProductsContent: React.FC<{
   );
 };
 
-// Categories Content Component
+// Categories Content Component (keeping the same structure but with updated styling)
 const CategoriesContent: React.FC<{
   categories: Category[];
   searchQuery: string;
@@ -799,7 +824,7 @@ const CategoriesContent: React.FC<{
   if (editingItem || isAddingNew) {
     return (
       <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-3xl shadow-lg p-8 border border-gray-100">
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg p-8 border border-white/20">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl">
@@ -829,7 +854,7 @@ const CategoriesContent: React.FC<{
                 type="text"
                 value={formData.name || ''}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-right"
+                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-right bg-white/50 backdrop-blur-sm"
                 placeholder="مثال: برجر"
                 required
               />
@@ -844,7 +869,7 @@ const CategoriesContent: React.FC<{
                   type="text"
                   value={formData.icon || ''}
                   onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-right"
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-right bg-white/50 backdrop-blur-sm"
                   placeholder="🍔"
                   required
                 />
@@ -861,7 +886,7 @@ const CategoriesContent: React.FC<{
               <textarea
                 value={formData.description || ''}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-right"
+                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-right bg-white/50 backdrop-blur-sm"
                 rows={3}
                 placeholder="وصف الصنف..."
               />
@@ -870,7 +895,7 @@ const CategoriesContent: React.FC<{
             <div className="flex gap-4 pt-6 border-t border-gray-200">
               <button
                 type="submit"
-                className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 px-6 rounded-2xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 font-semibold flex items-center justify-center gap-2"
+                className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 px-6 rounded-2xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
               >
                 <Save className="w-5 h-5" />
                 حفظ الصنف
@@ -899,7 +924,7 @@ const CategoriesContent: React.FC<{
         </div>
         <button
           onClick={onAddNew}
-          className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-2xl hover:from-purple-600 hover:to-pink-600 transition-all duration-300 font-semibold flex items-center gap-2 shadow-lg hover:shadow-xl"
+          className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-2xl hover:from-purple-600 hover:to-pink-600 transition-all duration-300 font-semibold flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
         >
           <Plus className="w-5 h-5" />
           إضافة صنف جديد
@@ -909,7 +934,7 @@ const CategoriesContent: React.FC<{
       {/* Categories Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredCategories.map((category) => (
-          <div key={category.id} className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border border-gray-100">
+          <div key={category.id} className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border border-white/20 hover:scale-105">
             <div className="flex items-center gap-4 mb-4">
               <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center text-3xl">
                 {category.icon}
@@ -922,14 +947,14 @@ const CategoriesContent: React.FC<{
             <div className="flex gap-2">
               <button
                 onClick={() => onEdit(category)}
-                className="flex-1 bg-blue-500 text-white py-2 px-4 rounded-xl hover:bg-blue-600 transition-colors shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white py-2 px-4 rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 transform hover:scale-105"
               >
                 <Edit className="w-4 h-4" />
                 تعديل
               </button>
               <button
                 onClick={() => onDelete(category.id)}
-                className="flex-1 bg-red-500 text-white py-2 px-4 rounded-xl hover:bg-red-600 transition-colors shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                className="flex-1 bg-gradient-to-r from-red-500 to-pink-500 text-white py-2 px-4 rounded-xl hover:from-red-600 hover:to-pink-600 transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 transform hover:scale-105"
               >
                 <Trash2 className="w-4 h-4" />
                 حذف
@@ -954,7 +979,7 @@ const CategoriesContent: React.FC<{
 const OrdersContent: React.FC<{ recentOrders: any[] }> = ({ recentOrders }) => {
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-white/20">
         <h3 className="text-xl font-bold text-gray-800 mb-6">الطلبات الحديثة</h3>
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -971,7 +996,7 @@ const OrdersContent: React.FC<{ recentOrders: any[] }> = ({ recentOrders }) => {
             </thead>
             <tbody>
               {recentOrders.map((order) => (
-                <tr key={order.id} className="border-b border-gray-100 hover:bg-gray-50">
+                <tr key={order.id} className="border-b border-gray-100 hover:bg-red-50/50">
                   <td className="py-4 px-4 font-medium text-gray-800">#{order.id}</td>
                   <td className="py-4 px-4 text-gray-700">{order.customer}</td>
                   <td className="py-4 px-4 text-gray-700">{order.items} منتج</td>
@@ -988,10 +1013,10 @@ const OrdersContent: React.FC<{ recentOrders: any[] }> = ({ recentOrders }) => {
                   <td className="py-4 px-4 text-gray-600">{order.time}</td>
                   <td className="py-4 px-4">
                     <div className="flex gap-2">
-                      <button className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition-colors">
+                      <button className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white p-2 rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all transform hover:scale-105">
                         <Eye className="w-4 h-4" />
                       </button>
-                      <button className="bg-green-500 text-white p-2 rounded-lg hover:bg-green-600 transition-colors">
+                      <button className="bg-gradient-to-r from-green-500 to-emerald-500 text-white p-2 rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all transform hover:scale-105">
                         <Edit className="w-4 h-4" />
                       </button>
                     </div>
@@ -1011,7 +1036,7 @@ const AnalyticsContent: React.FC<{ stats: any }> = ({ stats }) => {
   return (
     <div className="space-y-6">
       <div className="grid md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-white/20">
           <h3 className="text-xl font-bold text-gray-800 mb-6">أداء المبيعات</h3>
           <div className="space-y-4">
             <div className="flex justify-between items-center">
@@ -1029,13 +1054,13 @@ const AnalyticsContent: React.FC<{ stats: any }> = ({ stats }) => {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-white/20">
           <h3 className="text-xl font-bold text-gray-800 mb-6">المنتجات الأكثر مبيعاً</h3>
           <div className="space-y-3">
             {['برجر كلاسيك', 'برجر تشيز', 'كومبو سبيشال', 'برجر باربكيو'].map((product, index) => (
               <div key={product} className="flex items-center justify-between">
                 <span className="text-gray-700">{product}</span>
-                <span className="font-bold text-blue-600">{45 - index * 8} مبيعة</span>
+                <span className="font-bold text-red-600">{45 - index * 8} مبيعة</span>
               </div>
             ))}
           </div>
@@ -1049,28 +1074,28 @@ const AnalyticsContent: React.FC<{ stats: any }> = ({ stats }) => {
 const SettingsContent: React.FC = () => {
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-white/20">
         <h3 className="text-xl font-bold text-gray-800 mb-6">إعدادات النظام</h3>
         <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+          <div className="flex items-center justify-between p-4 bg-white/50 rounded-xl">
             <div>
               <h4 className="font-medium text-gray-800">الإشعارات</h4>
               <p className="text-sm text-gray-600">تلقي إشعارات الطلبات الجديدة</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" className="sr-only peer" defaultChecked />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
             </label>
           </div>
 
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+          <div className="flex items-center justify-between p-4 bg-white/50 rounded-xl">
             <div>
               <h4 className="font-medium text-gray-800">التحديث التلقائي</h4>
               <p className="text-sm text-gray-600">تحديث البيانات تلقائياً</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" className="sr-only peer" defaultChecked />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
             </label>
           </div>
         </div>
