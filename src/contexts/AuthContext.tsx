@@ -1,12 +1,5 @@
 // src/contexts/AuthContext.tsx
-
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode
-} from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -17,19 +10,19 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // استرجاع حالة الجلسة من localStorage عند البداية
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    const stored = localStorage.getItem('isAuthenticated');
-    return stored === 'true';
+    return localStorage.getItem('isAuthenticated') === 'true';
   });
 
-  // مزامنة أي تغيير في isAuthenticated مع localStorage
-  useEffect(() => {
-    localStorage.setItem('isAuthenticated', isAuthenticated ? 'true' : 'false');
-  }, [isAuthenticated]);
+  const login = () => {
+    setIsAuthenticated(true);
+    localStorage.setItem('isAuthenticated', 'true');
+  };
 
-  const login = () => setIsAuthenticated(true);
-  const logout = () => setIsAuthenticated(false);
+  const logout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('isAuthenticated');
+  };
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
@@ -40,10 +33,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 export const useAuth = (): AuthContextType => {
   const ctx = useContext(AuthContext);
-  if (!ctx) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  if (!ctx) throw new Error('useAuth must be inside AuthProvider');
   return ctx;
 };
-
-export default AuthContext;
