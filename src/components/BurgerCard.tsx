@@ -79,8 +79,7 @@ const BurgerCard: React.FC<BurgerCardProps> = ({ burger, onDetailsClick }) => {
               e.stopPropagation();
               onDetailsClick(burger);
             }}
-            className={`p-2.5 rounded-full bg-white/80 backdrop-blur-sm text-gray-600 hover:bg-white hover:text-blue-500 transition-all duration-300 ${
-              isHovered ? 'scale-100 opacity-100' : 'scale-0 opacity-0'
+            className={`p-2.5 rounded-full bg-white/80 backdrop-blur-sm text-gray-600 hover:bg-white hover:text-blue-500 
             }`}
           >
             <Eye className="w-4 h-4" />
@@ -157,10 +156,10 @@ const BurgerCard: React.FC<BurgerCardProps> = ({ burger, onDetailsClick }) => {
       </div>
 
       {/* Hover Effect Border */}
-      <div className="absolute inset-0 border-2 border-red-500 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+      {/* <div className="absolute inset-0 border-2 border-red-500 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" /> */}
       
       {/* Shine Effect */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
+      {/* <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" /> */}
     </div>
   );
 };
