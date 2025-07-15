@@ -16,7 +16,7 @@ const HeroSection: React.FC = () => {
           {/* Text Content */}
           <div className="text-center lg:text-right space-y-8">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg ">
+            <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg my-2">
               <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
               <span className="text-sm font-medium text-gray-700">الطلب غير متاح الآن</span>
             </div>

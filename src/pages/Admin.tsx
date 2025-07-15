@@ -92,7 +92,7 @@ const AdminContent: React.FC = () => {
         <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-red-500 to-orange-500">
           <div className="flex items-center gap-3">
             <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-lg">
-              <img src={Logo} alt="Logo" className="w-10 h-10" />
+              <img src={Logo} alt="Logo" className="w-12" />
             </div>
             <div>
               <h1 className="text-xl font-bold text-white">لوحة الإدارة</h1>
@@ -160,7 +160,7 @@ const AdminContent: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="lg:mr-80">
+      <div className="lg:ml-80">
         {/* Top Bar */}
         <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200 p-6 sticky top-0 z-30">
           <div className="flex items-center justify-between">
@@ -205,10 +205,10 @@ const AdminContent: React.FC = () => {
               </div>
 
               {/* Notifications */}
-              <button className="relative p-3 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-2xl transition-colors">
+              {/* <button className="relative p-3 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-2xl transition-colors">
                 <Bell className="w-6 h-6" />
                 <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
-              </button>
+              </button> */} 
 
               {/* View Site */}
               <button
@@ -672,7 +672,7 @@ const ProductsContent: React.FC<{
         </div>
         <button
           onClick={onAddNew}
-          className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-2xl hover:from-green-600 hover:to-emerald-600 transition-all duration-300 font-semibold flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
+          className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 py-3 rounded-2xl hover:from-red-600 hover:to-orange-600 transition-all duration-300 font-semibold flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
         >
           <Plus className="w-5 h-5" />
           إضافة منتج جديد
@@ -827,7 +827,7 @@ const CategoriesContent: React.FC<{
         <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg p-8 border border-white/20">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl">
+              <div className="p-3 bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl">
                 {editingItem ? <Edit className="w-6 h-6 text-white" /> : <Plus className="w-6 h-6 text-white" />}
               </div>
               <div>
@@ -895,7 +895,7 @@ const CategoriesContent: React.FC<{
             <div className="flex gap-4 pt-6 border-t border-gray-200">
               <button
                 type="submit"
-                className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 px-6 rounded-2xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                className="flex-1 bg-gradient-to-r from-red-500 to-orange-500 text-white py-4 px-6 rounded-2xl hover:from-red-600 hover:to-orange-600 transition-all duration-300 font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
               >
                 <Save className="w-5 h-5" />
                 حفظ الصنف
@@ -924,7 +924,7 @@ const CategoriesContent: React.FC<{
         </div>
         <button
           onClick={onAddNew}
-          className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-2xl hover:from-purple-600 hover:to-pink-600 transition-all duration-300 font-semibold flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
+          className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 py-3 rounded-2xl hover:from-red-600 hover:to-orange-600 transition-all duration-300 font-semibold flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
         >
           <Plus className="w-5 h-5" />
           إضافة صنف جديد

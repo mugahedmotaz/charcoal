@@ -1,6 +1,7 @@
 
+import { url } from 'inspector';
 import { BurgerItem } from '../types/burger';
-
+import E from "../components/eshin.jpg";
 export const burgerData: BurgerItem[] = [
   {
 
@@ -77,6 +78,7 @@ export const burgerData: BurgerItem[] = [
     description: "لحمه/فراخ + مايونيز + جبنه + سويت صوص + بصل + خس" ,
     price: 9000,
     image: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&h=300&fit=crop',
+    // image:E,
     category: 'burger',
     extras: [
     ]

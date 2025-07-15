@@ -129,10 +129,20 @@ const IndexContent: React.FC = () => {
   <div className="container mx-auto px-4 text-center">
     
     {/* Logo and Title */}
-    <div className="flex items-center justify-center mb-4">
-      <img src={Logo} alt="Charcoal's Logo" className="w-12  mr-2" />
-      <h1 className="font-bold text-xl">شاركلز - بورتسودان</h1>
-    </div>
+    <div className="flex items-center space-x-3 justify-center mb-12">
+            <div className="relative">
+              <div className=" ml-2 w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                <img src={Logo} alt="Logo" className="w-12" />
+              </div>
+              {/* <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full animate-pulse"></div> */}
+            </div>
+            <div className="hidden md:block">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+                شاركلز
+              </h1>
+              <p className="text-sm text-gray-500 font-medium">بورتسودان</p>
+            </div>
+          </div>
 
     {/* Social Links */}
     <div className="flex justify-center items-center gap-3 my-4">
@@ -145,8 +155,13 @@ const IndexContent: React.FC = () => {
     </div>
 
     {/* Description */}
-    <p className="text-gray-600 mb-6">
-      أفضل برجر في المدينة - طعم لا يُنسى مع كل قضمة
+    <p className="text-gray-600 my-6">
+      أفضل برجر في <span className="relative">
+                  <span className="bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+                     بورتسـودان
+                  </span>
+                  <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-red-500 to-orange-500 rounded-full"></div>
+                </span>  طعم لا يُنسى مع كل قضمة
     </p>
 
     {/* Footer Links */}
@@ -162,7 +177,7 @@ const IndexContent: React.FC = () => {
       © 2024 Charcoal's. جميع الحقوق محفوظة.
     </p>
     <p className="text-xs text-gray-500 mt-2">
-      Development by <span className="text-red-600 font-semibold">Mugahed Motaz</span>
+      Development by <a className="text-red-600 font-bold" href='#'>Mugahed Motaz</a>
     </p>
   </div>
 </footer>
