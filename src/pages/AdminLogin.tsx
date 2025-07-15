@@ -60,7 +60,7 @@ const AdminLogin: React.FC = () => {
             <button
               type="button"
               onClick={() => setShowPassword(prev => !prev)}
-              className="absolute inset-y-0 right-3 flex items-center text-gray-500"
+              className="absolute inset-y-0 right-3 top-8 flex items-center text-gray-500"
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
