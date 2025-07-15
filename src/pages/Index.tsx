@@ -125,33 +125,47 @@ const IndexContent: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white py-12 mt-16">
-        <div className="container mx-auto px-4 text-center">
-          <div className="flex items-center justify-center mb-4">
-            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center ml-3">
-              <span className="text-red-600 font-bold text-2xl"><img src={Logo} alt="" /></span>
-            </div>
-            <h1 className="font-bold">شاركلز - بورتسودان</h1>
-          </div>
-          <div className='flex justify-center items-center my-2 gap-2'>
-            <Facebook className=' bg-yellow-400 w-8 h-8 p-1 rounded-sm '/>
-            <Instagram className=' bg-yellow-400 w-8 h-8 p-1 rounded-sm '/>
-          </div>
-          <p className="text-gray-400 mb-6">
-            أفضل برجر في المدينة - طعم لا يُنسى مع كل قضمة
-          </p>
-          <div className="flex justify-center gap-8 text-sm">
-            <a href="#" className="hover:text-yellow-400 transition-colors">من نحن</a>
-            <a href="#" className="hover:text-yellow-400 transition-colors">اتصل بنا</a>
-            <a href="#" className="hover:text-yellow-400 transition-colors">سياسة الخصوصية</a>
-            <a href="#" className="hover:text-yellow-400 transition-colors">الشروط والأحكام</a>
-          </div>
-          <div className="mt-8 pt-8 border-t border-gray-700 text-gray-400 text-sm">
-            © 2024 Charcoal's. جميع الحقوق محفوظة.
-          </div>
-          <p className='mt-4'> Development by <span className='bg-gradient-to-br from-red-500 to-orange-500 p-1 rounded-sm mt-2'>Mugahed Motaz</span></p>
-        </div>
-      </footer>
+    <footer className="bg-white text-gray-800 py-10 border-t">
+  <div className="container mx-auto px-4 text-center">
+    
+    {/* Logo and Title */}
+    <div className="flex items-center justify-center mb-4">
+      <img src={Logo} alt="Charcoal's Logo" className="w-12  mr-2" />
+      <h1 className="font-bold text-xl">شاركلز - بورتسودان</h1>
+    </div>
+
+    {/* Social Links */}
+    <div className="flex justify-center items-center gap-3 my-4">
+      <a href="#" aria-label="Facebook">
+        <Facebook className="w-8 h-8 text-white bg-gradient-to-r from-red-500 to-orange-500 p-1 rounded-md hover:bg-yellow-600 transition" />
+      </a>
+      <a href="#" aria-label="Instagram">
+        <Instagram className="w-8 h-8 text-white bg-gradient-to-r from-red-500 to-orange-500 p-1 rounded-md hover:bg-yellow-600 transition" />
+      </a>
+    </div>
+
+    {/* Description */}
+    <p className="text-gray-600 mb-6">
+      أفضل برجر في المدينة - طعم لا يُنسى مع كل قضمة
+    </p>
+
+    {/* Footer Links */}
+    <div className="flex justify-center flex-wrap gap-6 text-sm text-gray-600 mb-6">
+      <a href="#" className="hover:text-red-500 transition">من نحن</a>
+      <a href="#" className="hover:text-red-500 transition">اتصل بنا</a>
+      <a href="#" className="hover:text-red-500 transition">سياسة الخصوصية</a>
+      <a href="#" className="hover:text-red-500 transition">الشروط والأحكام</a>
+    </div>
+
+    {/* Bottom Note */}
+    <p className="text-xs text-gray-500">
+      © 2024 Charcoal's. جميع الحقوق محفوظة.
+    </p>
+    <p className="text-xs text-gray-500 mt-2">
+      Development by <span className="text-red-600 font-semibold">Mugahed Motaz</span>
+    </p>
+  </div>
+</footer>
 
       {/* Modals */}
       <BurgerDetails
