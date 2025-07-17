@@ -1,4 +1,4 @@
-// تحديث أنواع البيانات لتتوافق مع قاعدة البيانات الجديدة
+// تحديث أنواع البيانات لتتوافق مع قاعدة البيانات
 
 export interface BurgerItem {
   id: string;
@@ -14,6 +14,8 @@ export interface BurgerItem {
   is_new?: boolean;
   is_active?: boolean;
   sort_order?: number;
+  created_at?: string;
+  updated_at?: string;
   category?: Category;
 }
 
@@ -23,6 +25,8 @@ export interface BurgerExtra {
   price: number;
   is_active?: boolean;
   sort_order?: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface CartItem {
@@ -38,7 +42,7 @@ export interface CartContextType {
   items: CartItem[];
   totalItems: number;
   totalPrice: number;
-  addItem: (product: BurgerItem, meatType: 'beef' | 'chicken', extras: BurgerExtra[]) => void;
+  addItem: (product: BurgerItem, meatType: 'beef' | 'chicken', extras: BurgerExtra[], quantity?: number) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
@@ -51,6 +55,8 @@ export interface Category {
   description?: string;
   sort_order?: number;
   is_active?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface AdminContextType {
@@ -83,4 +89,54 @@ export interface OrderData {
       unit_price: number;
     }[];
   }[];
+}
+
+export interface Order {
+  id: string;
+  customer_name: string;
+  customer_phone?: string;
+  customer_address?: string;
+  total_amount: number;
+  status: 'pending' | 'confirmed' | 'preparing' | 'ready' | 'delivered' | 'cancelled';
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+  order_items?: OrderItem[];
+}
+
+export interface OrderItem {
+  id: string;
+  order_id: string;
+  product_id: string;
+  meat_type: 'beef' | 'chicken';
+  quantity: number;
+  unit_price: number;
+  total_price: number;
+  created_at: string;
+  product?: BurgerItem;
+  order_item_extras?: OrderItemExtra[];
+}
+
+export interface OrderItemExtra {
+  id: string;
+  order_item_id: string;
+  extra_id: string;
+  quantity: number;
+  unit_price: number;
+  total_price: number;
+  extra?: BurgerExtra;
+}
+
+export interface Profile {
+  id: string;
+  email: string;
+  full_name?: string;
+  avatar_url?: string;
+  timezone?: string;
+  language?: string;
+  theme?: string;
+  subscription_type?: string;
+  subscription_expires_at?: string;
+  created_at?: string;
+  updated_at?: string;
 }

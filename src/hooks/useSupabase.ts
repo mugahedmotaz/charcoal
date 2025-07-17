@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { supabase, Category, Product, Extra, Order } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
+import { Category, BurgerItem, BurgerExtra, Order } from '../types/database';
 
 // Hook للحصول على الأصناف
 export const useCategories = () => {
@@ -14,6 +15,7 @@ export const useCategories = () => {
   const fetchCategories = async () => {
     try {
       setLoading(true);
+      setError(null);
       const { data, error } = await supabase
         .from('categories')
         .select('*')
@@ -23,7 +25,8 @@ export const useCategories = () => {
       if (error) throw error;
       setCategories(data || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'حدث خطأ');
+      console.error('Error fetching categories:', err);
+      setError(err instanceof Error ? err.message : 'حدث خطأ في جلب الأصناف');
     } finally {
       setLoading(false);
     }
@@ -34,7 +37,7 @@ export const useCategories = () => {
 
 // Hook للحصول على المنتجات
 export const useProducts = (categoryId?: string) => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<BurgerItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,6 +48,7 @@ export const useProducts = (categoryId?: string) => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
+      setError(null);
       let query = supabase
         .from('products')
         .select(`
@@ -63,7 +67,8 @@ export const useProducts = (categoryId?: string) => {
       if (error) throw error;
       setProducts(data || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'حدث خطأ');
+      console.error('Error fetching products:', err);
+      setError(err instanceof Error ? err.message : 'حدث خطأ في جلب المنتجات');
     } finally {
       setLoading(false);
     }
@@ -74,7 +79,7 @@ export const useProducts = (categoryId?: string) => {
 
 // Hook للحصول على الإضافات
 export const useExtras = () => {
-  const [extras, setExtras] = useState<Extra[]>([]);
+  const [extras, setExtras] = useState<BurgerExtra[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -85,6 +90,7 @@ export const useExtras = () => {
   const fetchExtras = async () => {
     try {
       setLoading(true);
+      setError(null);
       const { data, error } = await supabase
         .from('extras')
         .select('*')
@@ -94,7 +100,8 @@ export const useExtras = () => {
       if (error) throw error;
       setExtras(data || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'حدث خطأ');
+      console.error('Error fetching extras:', err);
+      setError(err instanceof Error ? err.message : 'حدث خطأ في جلب الإضافات');
     } finally {
       setLoading(false);
     }
@@ -116,6 +123,7 @@ export const useOrders = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
+      setError(null);
       const { data, error } = await supabase
         .from('orders')
         .select(`
@@ -134,7 +142,8 @@ export const useOrders = () => {
       if (error) throw error;
       setOrders(data || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'حدث خطأ');
+      console.error('Error fetching orders:', err);
+      setError(err instanceof Error ? err.message : 'حدث خطأ في جلب الطلبات');
     } finally {
       setLoading(false);
     }
@@ -229,6 +238,7 @@ export const useCreateOrder = () => {
 
       return order;
     } catch (err) {
+      console.error('Error creating order:', err);
       const errorMessage = err instanceof Error ? err.message : 'حدث خطأ في إنشاء الطلب';
       setError(errorMessage);
       throw new Error(errorMessage);
