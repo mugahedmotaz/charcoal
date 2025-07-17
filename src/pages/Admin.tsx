@@ -45,22 +45,22 @@ const AdminDashboard: React.FC = () => {
 
 const AdminContent: React.FC = () => {
   const navigate = useNavigate();
-  const { burgers, categories, addBurger, updateBurger, deleteBurger, addCategory, updateCategory, deleteCategory } = useAdmin();
+  const { products, categories, extras, loading, error, addProduct, updateProduct, deleteProduct, addCategory, updateCategory, deleteCategory } = useAdmin();
   const [activeTab, setActiveTab] = useState<'dashboard' | 'products' | 'categories' | 'orders' | 'analytics' | 'settings'>('dashboard');
-  const [editingItem, setEditingItem] = useState<BurgerItem | Category | null>(null);
+  const [editingItem, setEditingItem] = useState<any>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // إحصائيات وهمية للعرض
   const stats = {
-    totalProducts: burgers.length,
+    totalProducts: products.length,
     totalCategories: categories.length,
     totalOrders: 156,
     totalRevenue: 45230,
     todayOrders: 23,
     todayRevenue: 3450,
-    popularProduct: burgers.find(b => b.popular)?.name || 'برجر كلاسيك',
+    popularProduct: products.find(b => b.is_popular)?.name || 'برجر كلاسيك',
     averageRating: 4.8
   };
 
@@ -229,19 +229,19 @@ const AdminContent: React.FC = () => {
           {activeTab === 'dashboard' && <DashboardContent stats={stats} recentOrders={recentOrders} />}
           {activeTab === 'products' && (
             <ProductsContent
-              burgers={burgers}
+              products={products}
               categories={categories}
               searchQuery={searchQuery}
               onEdit={setEditingItem}
-              onDelete={deleteBurger}
+              onDelete={deleteProduct}
               onAddNew={() => setIsAddingNew(true)}
               editingItem={editingItem}
               isAddingNew={isAddingNew}
               onSave={(data) => {
-                if (editingItem && 'price' in editingItem) {
-                  updateBurger(editingItem.id, data);
+                if (editingItem && 'beef_price' in editingItem) {
+                  updateProduct(editingItem.id, data);
                 } else {
-                  addBurger(data as any);
+                  addProduct(data as any);
                 }
                 setEditingItem(null);
                 setIsAddingNew(false);
@@ -442,7 +442,7 @@ const DashboardContent: React.FC<{ stats: any; recentOrders: any[] }> = ({ stats
 
 // Products Content Component (keeping the same structure but with updated styling)
 const ProductsContent: React.FC<{
-  burgers: BurgerItem[];
+  products: BurgerItem[];
   categories: Category[];
   searchQuery: string;
   onEdit: (item: BurgerItem) => void;
@@ -452,29 +452,31 @@ const ProductsContent: React.FC<{
   isAddingNew: boolean;
   onSave: (data: Partial<BurgerItem>) => void;
   onCancel: () => void;
-}> = ({ burgers, categories, searchQuery, onEdit, onDelete, onAddNew, editingItem, isAddingNew, onSave, onCancel }) => {
+}> = ({ products, categories, searchQuery, onEdit, onDelete, onAddNew, editingItem, isAddingNew, onSave, onCancel }) => {
   const [formData, setFormData] = useState<Partial<BurgerItem>>({});
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   React.useEffect(() => {
-    if (editingItem && 'price' in editingItem) {
+    if (editingItem && 'beef_price' in editingItem) {
       setFormData(editingItem);
     } else if (isAddingNew) {
       setFormData({
         name: '',
         description: '',
-        price: 0,
+        beef_price: 0,
+        chicken_price: 0,
         image: '',
-        category: 'burger',
-        extras: []
+        category_id: categories[0]?.id || '',
+        is_popular: false,
+        is_new: false
       });
     }
   }, [editingItem, isAddingNew]);
 
-  const filteredBurgers = burgers.filter(burger => {
-    const matchesSearch = burger.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         burger.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || burger.category === selectedCategory;
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         product.description?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || product.category_id === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -541,12 +543,12 @@ const ProductsContent: React.FC<{
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-3">
-                      السعر (ج.س) *
+                      سعر اللحم (ج.س) *
                     </label>
                     <input
                       type="number"
-                      value={formData.price || 0}
-                      onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
+                      value={formData.beef_price || 0}
+                      onChange={(e) => setFormData({ ...formData, beef_price: Number(e.target.value) })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-right bg-white/50 backdrop-blur-sm"
                       min="0"
                       required
@@ -555,11 +557,26 @@ const ProductsContent: React.FC<{
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-3">
+                      سعر الفراخ (ج.س) *
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.chicken_price || 0}
+                      onChange={(e) => setFormData({ ...formData, chicken_price: Number(e.target.value) })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-right bg-white/50 backdrop-blur-sm"
+                      min="0"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-3">
                       الصنف *
                     </label>
                     <select
-                      value={formData.category || 'burger'}
-                      onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
+                      value={formData.category_id || ''}
+                      onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-right bg-white/50 backdrop-blur-sm"
                     >
                       {categories.map((category) => (
@@ -568,15 +585,14 @@ const ProductsContent: React.FC<{
                         </option>
                       ))}
                     </select>
-                  </div>
                 </div>
 
                 <div className="flex items-center gap-4">
                   <label className="flex items-center gap-2">
                     <input
                       type="checkbox"
-                      checked={formData.popular || false}
-                      onChange={(e) => setFormData({ ...formData, popular: e.target.checked })}
+                      checked={formData.is_popular || false}
+                      onChange={(e) => setFormData({ ...formData, is_popular: e.target.checked })}
                       className="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
                     />
                     <span className="text-sm font-medium text-gray-700">منتج مميز</span>
@@ -584,8 +600,8 @@ const ProductsContent: React.FC<{
                   <label className="flex items-center gap-2">
                     <input
                       type="checkbox"
-                      checked={formData.new || false}
-                      onChange={(e) => setFormData({ ...formData, new: e.target.checked })}
+                      checked={formData.is_new || false}
+                      onChange={(e) => setFormData({ ...formData, is_new: e.target.checked })}
                       className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
                     />
                     <span className="text-sm font-medium text-gray-700">منتج جديد</span>
@@ -697,7 +713,7 @@ const ProductsContent: React.FC<{
                   : 'bg-white/50 text-gray-600 hover:bg-white/80 border border-gray-200'
               }`}
             >
-              الكل ({burgers.length})
+              الكل ({products.length})
             </button>
             {categories.map((category) => (
               <button
@@ -709,7 +725,7 @@ const ProductsContent: React.FC<{
                     : 'bg-white/50 text-gray-600 hover:bg-white/80 border border-gray-200'
                 }`}
               >
-                {category.name} ({burgers.filter(b => b.category === category.id).length})
+                {category.name} ({products.filter(b => b.category_id === category.id).length})
               </button>
             ))}
           </div>
@@ -718,21 +734,21 @@ const ProductsContent: React.FC<{
 
       {/* Products Grid */}
       <div className="grid gap-6">
-        {filteredBurgers.map((burger) => (
-          <div key={burger.id} className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border border-white/20 hover:scale-[1.02]">
+        {filteredProducts.map((product) => (
+          <div key={product.id} className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border border-white/20 hover:scale-[1.02]">
             <div className="flex items-center gap-6">
               <div className="relative">
                 <img
-                  src={burger.image}
-                  alt={burger.name}
+                  src={product.image}
+                  alt={product.name}
                   className="w-24 h-24 object-cover rounded-2xl"
                 />
-                {burger.popular && (
+                {product.is_popular && (
                   <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
                     مميز
                   </div>
                 )}
-                {burger.new && (
+                {product.is_new && (
                   <div className="absolute -top-2 -left-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
                     جديد
                   </div>
@@ -742,28 +758,28 @@ const ProductsContent: React.FC<{
               <div className="flex-1">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h4 className="font-bold text-xl text-gray-800 mb-2">{burger.name}</h4>
-                    <p className="text-gray-600 mb-3 line-clamp-2">{burger.description}</p>
+                    <h4 className="font-bold text-xl text-gray-800 mb-2">{product.name}</h4>
+                    <p className="text-gray-600 mb-3 line-clamp-2">{product.description}</p>
                     <div className="flex items-center gap-4">
-                      <span className="text-2xl font-bold text-red-600">{burger.price} ج.س</span>
+                      <div className="flex gap-4">
+                        <span className="text-lg font-bold text-red-600">لحم: {product.beef_price} ج.س</span>
+                        <span className="text-lg font-bold text-orange-600">فراخ: {product.chicken_price} ج.س</span>
+                      </div>
                       <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-medium">
-                        {categories.find(c => c.id === burger.category)?.name}
+                        {categories.find(c => c.id === product.category_id)?.name}
                       </span>
-                      {burger.originalPrice && (
-                        <span className="text-gray-400 line-through">{burger.originalPrice} ج.س</span>
-                      )}
                     </div>
                   </div>
                   
                   <div className="flex gap-2">
                     <button
-                      onClick={() => onEdit(burger)}
+                      onClick={() => onEdit(product)}
                       className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white p-3 rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all shadow-md hover:shadow-lg transform hover:scale-105"
                     >
                       <Edit className="w-5 h-5" />
                     </button>
                     <button
-                      onClick={() => onDelete(burger.id)}
+                      onClick={() => onDelete(product.id)}
                       className="bg-gradient-to-r from-red-500 to-pink-500 text-white p-3 rounded-xl hover:from-red-600 hover:to-pink-600 transition-all shadow-md hover:shadow-lg transform hover:scale-105"
                     >
                       <Trash2 className="w-5 h-5" />
@@ -776,7 +792,7 @@ const ProductsContent: React.FC<{
         ))}
       </div>
 
-      {filteredBurgers.length === 0 && (
+      {filteredProducts.length === 0 && (
         <div className="text-center py-12">
           <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-xl font-bold text-gray-800 mb-2">لا توجد منتجات</h3>

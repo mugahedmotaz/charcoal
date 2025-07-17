@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, Star, Clock, Flame, Heart, Eye } from 'lucide-react';
-import { BurgerItem } from '../types/burger';
+import { BurgerItem } from '../types/database';
 import { useCart } from '../contexts/CartContext';
 
 interface BurgerCardProps {
@@ -9,14 +9,8 @@ interface BurgerCardProps {
 }
 
 const BurgerCard: React.FC<BurgerCardProps> = ({ burger, onDetailsClick }) => {
-  const { addItem } = useCart();
   const [isHovered, setIsHovered] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
-
-  const handleQuickAdd = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    addItem(burger, []);
-  };
 
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -86,14 +80,17 @@ const BurgerCard: React.FC<BurgerCardProps> = ({ burger, onDetailsClick }) => {
           </button>
         </div>
 
-        {/* Quick Add Button */}
+        {/* View Details Button */}
         <button
-          onClick={handleQuickAdd}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDetailsClick(burger);
+          }}
           className={`absolute bottom-4 right-4 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 ${
             isHovered ? 'scale-100 opacity-100' : 'scale-0 opacity-0'
           }`}
         >
-          <Plus className="w-5 h-5" />
+          <Eye className="w-5 h-5" />
         </button>
       </div>
 
@@ -133,24 +130,30 @@ const BurgerCard: React.FC<BurgerCardProps> = ({ burger, onDetailsClick }) => {
         {/* Price and Add Button */}
         <div className="flex items-center justify-between">
           <div className="flex flex-col">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold text-red-600">
-                {burger.price}
-              </span>
-              <span className="text-sm text-gray-500 font-medium">ج.س</span>
+            <div className="text-right">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-lg font-bold text-red-600">
+                  {burger.beef_price}
+                </span>
+                <span className="text-xs text-gray-500">لحم</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-lg font-bold text-orange-600">
+                  {burger.chicken_price}
+                </span>
+                <span className="text-xs text-gray-500">فراخ</span>
+              </div>
             </div>
-            {burger.originalPrice && (
-              <span className="text-sm text-gray-400 line-through">
-                {burger.originalPrice} ج.س
-              </span>
-            )}
           </div>
           
           <button 
-            onClick={handleQuickAdd}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDetailsClick(burger);
+            }}
             className="bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg"
           >
-            إضافة
+            اختيار
           </button>
         </div>
       </div>

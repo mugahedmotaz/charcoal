@@ -22,9 +22,10 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
     message += `——————————————\n\n`;
 
     items.forEach((item, i) => {
-      message += `🍔 *${i + 1}. ${item.burger.name}*\n`;
+      message += `🍔 *${i + 1}. ${item.product.name}*\n`;
+      message += `النوع: ${item.meat_type === 'beef' ? 'لحم' : 'فراخ'}\n`;
       message += `الكمية: ${item.quantity}\n`;
-      message += `السعر الفردي: ${item.burger.price} ج.س\n`;
+      message += `السعر الفردي: ${item.meat_type === 'beef' ? item.product.beef_price : item.product.chicken_price} ج.س\n`;
       if (item.selectedExtras.length)
         message += `➕ إضافات: ${item.selectedExtras.map(e => e.name).join(', ')}\n`;
       message += `💰 الإجمالي: ${item.totalPrice * item.quantity} ج.س\n`;
@@ -104,8 +105,8 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
                   >
                     <div className="relative shrink-0">
                       <img
-                        src={item.burger.image}
-                        alt={item.burger.name}
+                        src={item.product.image}
+                        alt={item.product.name}
                         className="w-16 h-16 rounded-xl object-cover"
                       />
                       <span className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
@@ -113,9 +114,12 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
                       </span>
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-bold text-gray-800">{item.burger.name}</h4>
+                      <h4 className="font-bold text-gray-800">{item.product.name}</h4>
+                      <p className="text-xs text-gray-500 mb-1">
+                        {item.meat_type === 'beef' ? '🥩 لحم' : '🍗 فراخ'}
+                      </p>
                       <p className="text-sm text-gray-600 mb-1">
-                        {item.burger.price} ج.س × {item.quantity}
+                        {item.meat_type === 'beef' ? item.product.beef_price : item.product.chicken_price} ج.س × {item.quantity}
                       </p>
                       {!!item.selectedExtras.length && (
                         <p className="text-xs text-gray-500 mb-2">

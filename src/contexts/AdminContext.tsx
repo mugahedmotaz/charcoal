@@ -1,128 +1,165 @@
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
-import { AdminContextType, BurgerItem, Category } from '../types/burger';
-import { burgerData } from '../data/burgers';
+import { AdminContextType, BurgerItem, Category, BurgerExtra } from '../types/database';
+import { supabase } from '../lib/supabase';
+import { useState, useEffect } from 'react';
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
-const defaultCategories: Category[] = [
-  { id: 'burger', name: 'برجر', icon: '🍔', description: 'برجر لذيذ بأنواع مختلفة' },
-  { id: 'combo', name: 'كومبو', icon: '🍟', description: 'وجبات كاملة مع المشروبات والبطاطس' },
-  { id: 'sides', name: 'إضافات', icon: '🥤', description: 'إضافات جانبية لذيذة' },
-  { id: 'drinks', name: 'مشروبات', icon: '🥤', description: 'مشروبات منعشة ومتنوعة' }
-];
-
-type AdminAction =
-  | { type: 'ADD_BURGER'; payload: BurgerItem }
-  | { type: 'UPDATE_BURGER'; payload: { id: string; burger: Partial<BurgerItem> } }
-  | { type: 'DELETE_BURGER'; payload: string }
-  | { type: 'ADD_CATEGORY'; payload: Category }
-  | { type: 'UPDATE_CATEGORY'; payload: { id: string; category: Partial<Category> } }
-  | { type: 'DELETE_CATEGORY'; payload: string };
-
-interface AdminState {
-  burgers: BurgerItem[];
-  categories: Category[];
-}
-
-const adminReducer = (state: AdminState, action: AdminAction): AdminState => {
-  switch (action.type) {
-    case 'ADD_BURGER':
-      return {
-        ...state,
-        burgers: [...state.burgers, action.payload]
-      };
-    
-    case 'UPDATE_BURGER':
-      return {
-        ...state,
-        burgers: state.burgers.map(burger =>
-          burger.id === action.payload.id
-            ? { ...burger, ...action.payload.burger }
-            : burger
-        )
-      };
-    
-    case 'DELETE_BURGER':
-      return {
-        ...state,
-        burgers: state.burgers.filter(burger => burger.id !== action.payload)
-      };
-    
-    case 'ADD_CATEGORY':
-      return {
-        ...state,
-        categories: [...state.categories, action.payload]
-      };
-    
-    case 'UPDATE_CATEGORY':
-      return {
-        ...state,
-        categories: state.categories.map(category =>
-          category.id === action.payload.id
-            ? { ...category, ...action.payload.category }
-            : category
-        )
-      };
-    
-    case 'DELETE_CATEGORY':
-      return {
-        ...state,
-        categories: state.categories.filter(category => category.id !== action.payload)
-      };
-    
-    default:
-      return state;
-  }
-};
-
 export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [state, dispatch] = useReducer(adminReducer, {
-    burgers: burgerData,
-    categories: defaultCategories
-  });
+  const [products, setProducts] = useState<BurgerItem[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [extras, setExtras] = useState<BurgerExtra[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const addBurger = (burgerData: Omit<BurgerItem, 'id'>) => {
-    const newBurger: BurgerItem = {
-      ...burgerData,
-      id: `burger-${Date.now()}`
-    };
-    dispatch({ type: 'ADD_BURGER', payload: newBurger });
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      
+      // جلب المنتجات
+      const { data: productsData, error: productsError } = await supabase
+        .from('products')
+        .select(`
+          *,
+          category:categories(*)
+        `)
+        .eq('is_active', true)
+        .order('sort_order');
+
+      if (productsError) throw productsError;
+
+      // جلب الأصناف
+      const { data: categoriesData, error: categoriesError } = await supabase
+        .from('categories')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order');
+
+      if (categoriesError) throw categoriesError;
+
+      // جلب الإضافات
+      const { data: extrasData, error: extrasError } = await supabase
+        .from('extras')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order');
+
+      if (extrasError) throw extrasError;
+
+      setProducts(productsData || []);
+      setCategories(categoriesData || []);
+      setExtras(extrasData || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'حدث خطأ');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const updateBurger = (id: string, burger: Partial<BurgerItem>) => {
-    dispatch({ type: 'UPDATE_BURGER', payload: { id, burger } });
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const addProduct = async (productData: Omit<BurgerItem, 'id'>) => {
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .insert([productData])
+        .select()
+        .single();
+
+      if (error) throw error;
+      await fetchData();
+    } catch (err) {
+      throw new Error(err instanceof Error ? err.message : 'حدث خطأ في إضافة المنتج');
+    }
   };
 
-  const deleteBurger = (id: string) => {
-    dispatch({ type: 'DELETE_BURGER', payload: id });
+  const updateProduct = async (id: string, productData: Partial<BurgerItem>) => {
+    try {
+      const { error } = await supabase
+        .from('products')
+        .update(productData)
+        .eq('id', id);
+
+      if (error) throw error;
+      await fetchData();
+    } catch (err) {
+      throw new Error(err instanceof Error ? err.message : 'حدث خطأ في تحديث المنتج');
+    }
   };
 
-  const addCategory = (categoryData: Omit<Category, 'id'>) => {
-    const newCategory: Category = {
-      ...categoryData,
-      id: `category-${Date.now()}`
-    };
-    dispatch({ type: 'ADD_CATEGORY', payload: newCategory });
+  const deleteProduct = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      await fetchData();
+    } catch (err) {
+      throw new Error(err instanceof Error ? err.message : 'حدث خطأ في حذف المنتج');
+    }
   };
 
-  const updateCategory = (id: string, category: Partial<Category>) => {
-    dispatch({ type: 'UPDATE_CATEGORY', payload: { id, category } });
+  const addCategory = async (categoryData: Omit<Category, 'id'>) => {
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .insert([categoryData])
+        .select()
+        .single();
+
+      if (error) throw error;
+      await fetchData();
+    } catch (err) {
+      throw new Error(err instanceof Error ? err.message : 'حدث خطأ في إضافة الصنف');
+    }
   };
 
-  const deleteCategory = (id: string) => {
-    dispatch({ type: 'DELETE_CATEGORY', payload: id });
+  const updateCategory = async (id: string, categoryData: Partial<Category>) => {
+    try {
+      const { error } = await supabase
+        .from('categories')
+        .update(categoryData)
+        .eq('id', id);
+
+      if (error) throw error;
+      await fetchData();
+    } catch (err) {
+      throw new Error(err instanceof Error ? err.message : 'حدث خطأ في تحديث الصنف');
+    }
+  };
+
+  const deleteCategory = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('categories')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      await fetchData();
+    } catch (err) {
+      throw new Error(err instanceof Error ? err.message : 'حدث خطأ في حذف الصنف');
+    }
   };
 
   return (
     <AdminContext.Provider value={{
-      burgers: state.burgers,
-      categories: state.categories,
-      addBurger,
-      updateBurger,
-      deleteBurger,
+      products,
+      categories,
+      extras,
+      loading,
+      error,
+      addProduct,
+      updateProduct,
+      deleteProduct,
       addCategory,
       updateCategory,
-      deleteCategory
+      deleteCategory,
+      refetch: fetchData
     }}>
       {children}
     </AdminContext.Provider>

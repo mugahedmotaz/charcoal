@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
-import { CartContextType, CartItem, BurgerItem, BurgerExtra } from '../types/burger';
+import { CartContextType, CartItem, BurgerItem, BurgerExtra } from '../types/database';
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 type CartAction =
-  | { type: 'ADD_ITEM'; payload: { burger: BurgerItem; extras: BurgerExtra[] } }
+  | { type: 'ADD_ITEM'; payload: { product: BurgerItem; meatType: 'beef' | 'chicken'; extras: BurgerExtra[]; quantity?: number } }
   | { type: 'REMOVE_ITEM'; payload: string }
   | { type: 'UPDATE_QUANTITY'; payload: { id: string; quantity: number } }
   | { type: 'CLEAR_CART' };
@@ -14,22 +14,23 @@ interface CartState {
 }
 
 // دالة لإنشاء مفتاح فريد للمنتج بناءً على المنتج والإضافات
-const createItemKey = (burger: BurgerItem, extras: BurgerExtra[]): string => {
+const createItemKey = (product: BurgerItem, meatType: 'beef' | 'chicken', extras: BurgerExtra[]): string => {
   const extrasIds = extras.map(extra => extra.id).sort().join(',');
-  return `${burger.id}-${extrasIds}`;
+  return `${product.id}-${meatType}-${extrasIds}`;
 };
 
 const cartReducer = (state: CartState, action: CartAction): CartState => {
   switch (action.type) {
     case 'ADD_ITEM':
-      const { burger, extras } = action.payload;
+      const { product, meatType, extras, quantity = 1 } = action.payload;
       const extrasPrice = extras.reduce((sum, extra) => sum + extra.price, 0);
-      const totalPrice = burger.price + extrasPrice;
-      const itemKey = createItemKey(burger, extras);
+      const basePrice = meatType === 'beef' ? product.beef_price : product.chicken_price;
+      const totalPrice = basePrice + extrasPrice;
+      const itemKey = createItemKey(product, meatType, extras);
       
       // البحث عن منتج مشابه موجود في السلة
       const existingItemIndex = state.items.findIndex(item => {
-        const existingKey = createItemKey(item.burger, item.selectedExtras);
+        const existingKey = createItemKey(item.product, item.meat_type, item.selectedExtras);
         return existingKey === itemKey;
       });
       
@@ -39,7 +40,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
           ...state,
           items: state.items.map((item, index) =>
             index === existingItemIndex
-              ? { ...item, quantity: item.quantity + 1 }
+              ? { ...item, quantity: item.quantity + quantity }
               : item
           )
         };
@@ -47,8 +48,9 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
         // إذا لم يكن موجود، إضافة منتج جديد
         const newItem: CartItem = {
           id: `${itemKey}-${Date.now()}`,
-          burger,
-          quantity: 1,
+          product,
+          meat_type: meatType,
+          quantity,
           selectedExtras: extras,
           totalPrice
         };
@@ -86,8 +88,8 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, { items: [] });
 
-  const addItem = (burger: BurgerItem, extras: BurgerExtra[]) => {
-    dispatch({ type: 'ADD_ITEM', payload: { burger, extras } });
+  const addItem = (product: BurgerItem, meatType: 'beef' | 'chicken', extras: BurgerExtra[], quantity = 1) => {
+    dispatch({ type: 'ADD_ITEM', payload: { product, meatType, extras, quantity } });
   };
 
   const removeItem = (id: string) => {

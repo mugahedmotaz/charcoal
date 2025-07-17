@@ -1,8 +1,10 @@
 
 import React, { useState } from 'react';
 import { X, Plus, Minus, ShoppingCart, Star, Clock } from 'lucide-react';
-import { BurgerItem, BurgerExtra } from '../types/burger';
+import { BurgerItem, BurgerExtra } from '../types/database';
 import { useCart } from '../contexts/CartContext';
+import { useExtras } from '../hooks/useSupabase';
+import MeatTypeSelector from './MeatTypeSelector';
 
 interface BurgerDetailsProps {
   burger: BurgerItem | null;
@@ -12,7 +14,9 @@ interface BurgerDetailsProps {
 
 const BurgerDetails: React.FC<BurgerDetailsProps> = ({ burger, isOpen, onClose }) => {
   const { addItem } = useCart();
+  const { extras } = useExtras();
   const [quantity, setQuantity] = useState(1);
+  const [selectedMeatType, setSelectedMeatType] = useState<'beef' | 'chicken'>('beef');
   const [selectedExtras, setSelectedExtras] = useState<BurgerExtra[]>([]);
 
   if (!burger || !isOpen) return null;
@@ -29,14 +33,14 @@ const BurgerDetails: React.FC<BurgerDetailsProps> = ({ burger, isOpen, onClose }
   };
 
   const extrasPrice = selectedExtras.reduce((sum, extra) => sum + extra.price, 0);
-  const totalPrice = (burger.price + extrasPrice) * quantity;
+  const basePrice = selectedMeatType === 'beef' ? burger.beef_price : burger.chicken_price;
+  const totalPrice = (basePrice + extrasPrice) * quantity;
 
   const handleAddToCart = () => {
-    for (let i = 0; i < quantity; i++) {
-      addItem(burger, selectedExtras);
-    }
+    addItem(burger, selectedMeatType, selectedExtras, quantity);
     onClose();
     setQuantity(1);
+    setSelectedMeatType('beef');
     setSelectedExtras([]);
   };
 
@@ -93,22 +97,32 @@ const BurgerDetails: React.FC<BurgerDetailsProps> = ({ burger, isOpen, onClose }
 
           {/* Price */}
           <div className="flex items-center gap-3 mb-6">
-            <span className="text-3xl font-bold text-red-600">
-              {burger.price} ج.س
-            </span>
-            {burger.originalPrice && (
-              <span className="text-lg text-gray-400 line-through">
-                {burger.originalPrice} ج.س
-              </span>
-            )}
+            <div className="flex gap-4">
+              <div className="text-center">
+                <div className="text-sm text-gray-500 mb-1">لحم</div>
+                <div className="text-2xl font-bold text-red-600">{burger.beef_price} ج.س</div>
+              </div>
+              <div className="text-center">
+                <div className="text-sm text-gray-500 mb-1">فراخ</div>
+                <div className="text-2xl font-bold text-orange-600">{burger.chicken_price} ج.س</div>
+              </div>
+            </div>
           </div>
 
+          {/* Meat Type Selector */}
+          <MeatTypeSelector
+            selectedType={selectedMeatType}
+            onTypeChange={setSelectedMeatType}
+            beefPrice={burger.beef_price}
+            chickenPrice={burger.chicken_price}
+          />
+
           {/* Extras */}
-          {burger.extras.length > 0 && (
+          {extras.length > 0 && (
             <div className="mb-6">
               <h3 className="text-xl font-bold text-gray-800 mb-4">الإضافات المتاحة</h3>
               <div className="space-y-3">
-                {burger.extras.map((extra) => (
+                {extras.map((extra) => (
                   <label 
                     key={extra.id}
                     className="flex items-center justify-between p-3 border border-gray-200 rounded-xl hover:border-red-500 transition-colors cursor-pointer"
@@ -158,10 +172,14 @@ const BurgerDetails: React.FC<BurgerDetailsProps> = ({ burger, isOpen, onClose }
             
             <button
               onClick={handleAddToCart}
-              className="w-full bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-bold py-4 px-6 rounded-xl transition-all hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+              className={`w-full font-bold py-4 px-6 rounded-xl transition-all hover:scale-105 shadow-lg flex items-center justify-center gap-2 ${
+                selectedMeatType === 'beef' 
+                  ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white'
+                  : 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white'
+              }`}
             >
               <ShoppingCart className="w-5 h-5" />
-              إضافة للسلة ({quantity})
+              إضافة للسلة ({quantity}) - {selectedMeatType === 'beef' ? 'لحم' : 'فراخ'}
             </button>
           </div>
         </div>

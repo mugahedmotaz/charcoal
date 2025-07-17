@@ -1,20 +1,20 @@
 
 import React, { useState, useMemo } from 'react';
 import { CartProvider } from '../contexts/CartContext';
-import { AdminProvider } from '../contexts/AdminContext';
 import Header from '../components/Header';
 import HeroSection from '../components/HeroSection';
 import BurgerCard from '../components/BurgerCard';
 import BurgerDetails from '../components/BurgerDetails';
 import CartSidebar from '../components/CartSidebar';
 import CategoryFilter from '../components/CategoryFilter';
-import { useAdmin } from '../contexts/AdminContext';
-import { BurgerItem } from '../types/burger';
+import { useCategories, useProducts } from '../hooks/useSupabase';
+import { BurgerItem } from '../types/database';
 import Logo from "../components/logo.png"
 import { Facebook, Instagram,} from 'lucide-react';
 
 const IndexContent: React.FC = () => {
-  const { burgers, categories } = useAdmin();
+  const { categories } = useCategories();
+  const { products: burgers } = useProducts();
   const [selectedBurger, setSelectedBurger] = useState<BurgerItem | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -29,13 +29,13 @@ const IndexContent: React.FC = () => {
     return burgers.filter(burger => {
       const matchesSearch = burger.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            burger.description.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory = activeCategory === 'all' || burger.category === activeCategory;
+      const matchesCategory = activeCategory === 'all' || burger.category_id === activeCategory;
       return matchesSearch && matchesCategory;
     });
   }, [searchQuery, activeCategory, burgers]);
 
   const popularBurgers = useMemo(() => {
-    return burgers.filter(burger => burger.popular).slice(0, 3);
+    return burgers.filter(burger => burger.is_popular).slice(0, 3);
   }, [burgers]);
 
   return (
@@ -199,11 +199,9 @@ const IndexContent: React.FC = () => {
 
 const Index: React.FC = () => {
   return (
-    <AdminProvider>
-      <CartProvider>
-        <IndexContent />
-      </CartProvider>
-    </AdminProvider>
+    <CartProvider>
+      <IndexContent />
+    </CartProvider>
   );
 };
 
