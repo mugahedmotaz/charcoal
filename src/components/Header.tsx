@@ -89,13 +89,13 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
             {/* </button> */}
 
             {/* Admin Panel */}
-            {/* <button
+            <button
               onClick={() => navigate('/admin')}
               className="hidden md:flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300 font-medium"
             >
               <Settings className="w-5 h-5" />
               الإدارة
-            </button> */}
+            </button>
 
             {/* Cart Button */}
             <button
@@ -164,13 +164,13 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
                   {item.name}
                 </a>
               ))}
-              {/* <button
+              <button
                 onClick={() => navigate('/admin')}
                 className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300 font-medium w-full text-right"
               >
                 <Settings className="w-5 h-5" />
                 الإدارة
-              </button> */}
+              </button>
             </nav>
           </div>
         )}

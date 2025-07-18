@@ -15,6 +15,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const fetchData = async () => {
     try {
       setLoading(true);
+      setError(null);
       
       // جلب المنتجات
       const { data: productsData, error: productsError } = await supabase
@@ -23,7 +24,6 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           *,
           category:categories(*)
         `)
-        .eq('is_active', true)
         .order('sort_order');
 
       if (productsError) throw productsError;
@@ -32,7 +32,6 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       const { data: categoriesData, error: categoriesError } = await supabase
         .from('categories')
         .select('*')
-        .eq('is_active', true)
         .order('sort_order');
 
       if (categoriesError) throw categoriesError;
@@ -41,7 +40,6 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       const { data: extrasData, error: extrasError } = await supabase
         .from('extras')
         .select('*')
-        .eq('is_active', true)
         .order('sort_order');
 
       if (extrasError) throw extrasError;
@@ -50,6 +48,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       setCategories(categoriesData || []);
       setExtras(extrasData || []);
     } catch (err) {
+      console.error('Error fetching admin data:', err);
       setError(err instanceof Error ? err.message : 'حدث خطأ');
     } finally {
       setLoading(false);
@@ -62,6 +61,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const addProduct = async (productData: Omit<BurgerItem, 'id'>) => {
     try {
+      setError(null);
       const { data, error } = await supabase
         .from('products')
         .insert([productData])
@@ -70,13 +70,16 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
       if (error) throw error;
       await fetchData();
+      return data;
     } catch (err) {
+      console.error('Error adding product:', err);
       throw new Error(err instanceof Error ? err.message : 'حدث خطأ في إضافة المنتج');
     }
   };
 
   const updateProduct = async (id: string, productData: Partial<BurgerItem>) => {
     try {
+      setError(null);
       const { error } = await supabase
         .from('products')
         .update(productData)
@@ -85,26 +88,30 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (error) throw error;
       await fetchData();
     } catch (err) {
+      console.error('Error updating product:', err);
       throw new Error(err instanceof Error ? err.message : 'حدث خطأ في تحديث المنتج');
     }
   };
 
   const deleteProduct = async (id: string) => {
     try {
+      setError(null);
       const { error } = await supabase
         .from('products')
-        .delete()
+        .update({ is_active: false })
         .eq('id', id);
 
       if (error) throw error;
       await fetchData();
     } catch (err) {
+      console.error('Error deleting product:', err);
       throw new Error(err instanceof Error ? err.message : 'حدث خطأ في حذف المنتج');
     }
   };
 
   const addCategory = async (categoryData: Omit<Category, 'id'>) => {
     try {
+      setError(null);
       const { data, error } = await supabase
         .from('categories')
         .insert([categoryData])
@@ -113,13 +120,16 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
       if (error) throw error;
       await fetchData();
+      return data;
     } catch (err) {
+      console.error('Error adding category:', err);
       throw new Error(err instanceof Error ? err.message : 'حدث خطأ في إضافة الصنف');
     }
   };
 
   const updateCategory = async (id: string, categoryData: Partial<Category>) => {
     try {
+      setError(null);
       const { error } = await supabase
         .from('categories')
         .update(categoryData)
@@ -128,20 +138,23 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (error) throw error;
       await fetchData();
     } catch (err) {
+      console.error('Error updating category:', err);
       throw new Error(err instanceof Error ? err.message : 'حدث خطأ في تحديث الصنف');
     }
   };
 
   const deleteCategory = async (id: string) => {
     try {
+      setError(null);
       const { error } = await supabase
         .from('categories')
-        .delete()
+        .update({ is_active: false })
         .eq('id', id);
 
       if (error) throw error;
       await fetchData();
     } catch (err) {
+      console.error('Error deleting category:', err);
       throw new Error(err instanceof Error ? err.message : 'حدث خطأ في حذف الصنف');
     }
   };
