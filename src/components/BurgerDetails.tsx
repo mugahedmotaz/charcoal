@@ -16,10 +16,24 @@ const BurgerDetails: React.FC<BurgerDetailsProps> = ({ burger, isOpen, onClose }
   const { addItem } = useCart();
   const { extras } = useExtras();
   const [quantity, setQuantity] = useState(1);
+  // تحديد نوع الصنف
+  const catName = burger?.category?.name;
+  const isBurgerOrCombo = catName === 'برجر' || catName === 'كومبو';
+  // فقط للبرجر والكومبو تظهر خيارات اللحم والفراخ والإضافات
   const [selectedMeatType, setSelectedMeatType] = useState<'beef' | 'chicken'>('beef');
   const [selectedExtras, setSelectedExtras] = useState<BurgerExtra[]>([]);
 
   if (!burger || !isOpen) return null;
+
+  let basePrice = burger.beef_price;
+  let extrasPrice = 0;
+  let totalPrice = basePrice * quantity;
+
+  if (isBurgerOrCombo) {
+    basePrice = selectedMeatType === 'beef' ? burger.beef_price : burger.chicken_price;
+    extrasPrice = selectedExtras.reduce((sum, extra) => sum + extra.price, 0);
+    totalPrice = (basePrice + extrasPrice) * quantity;
+  }
 
   const handleExtraToggle = (extra: BurgerExtra) => {
     setSelectedExtras(prev => {
@@ -32,16 +46,16 @@ const BurgerDetails: React.FC<BurgerDetailsProps> = ({ burger, isOpen, onClose }
     });
   };
 
-  const extrasPrice = selectedExtras.reduce((sum, extra) => sum + extra.price, 0);
-  const basePrice = selectedMeatType === 'beef' ? burger.beef_price : burger.chicken_price;
-  const totalPrice = (basePrice + extrasPrice) * quantity;
-
   const handleAddToCart = () => {
-    addItem(burger, selectedMeatType, selectedExtras, quantity);
+    if (isBurgerOrCombo) {
+      addItem(burger, selectedMeatType, selectedExtras, quantity);
+      setSelectedMeatType('beef');
+      setSelectedExtras([]);
+    } else {
+      addItem(burger, 'beef', [], quantity);
+    }
     onClose();
     setQuantity(1);
-    setSelectedMeatType('beef');
-    setSelectedExtras([]);
   };
 
   return (
@@ -97,28 +111,37 @@ const BurgerDetails: React.FC<BurgerDetailsProps> = ({ burger, isOpen, onClose }
 
           {/* Price */}
           <div className="flex items-center gap-3 mb-6">
-            <div className="flex gap-4">
+            {isBurgerOrCombo ? (
+              <div className="flex gap-4">
+                <div className="text-center">
+                  <div className="text-sm text-gray-500 mb-1">لحم</div>
+                  <div className="text-2xl font-bold text-red-600">{burger.beef_price} ج.س</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-sm text-gray-500 mb-1">فراخ</div>
+                  <div className="text-2xl font-bold text-orange-600">{burger.chicken_price} ج.س</div>
+                </div>
+              </div>
+            ) : (
               <div className="text-center">
-                <div className="text-sm text-gray-500 mb-1">لحم</div>
+                <div className="text-sm text-gray-500 mb-1">السعر</div>
                 <div className="text-2xl font-bold text-red-600">{burger.beef_price} ج.س</div>
               </div>
-              <div className="text-center">
-                <div className="text-sm text-gray-500 mb-1">فراخ</div>
-                <div className="text-2xl font-bold text-orange-600">{burger.chicken_price} ج.س</div>
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Meat Type Selector */}
-          <MeatTypeSelector
-            selectedType={selectedMeatType}
-            onTypeChange={setSelectedMeatType}
-            beefPrice={burger.beef_price}
-            chickenPrice={burger.chicken_price}
-          />
+          {isBurgerOrCombo && (
+            <MeatTypeSelector
+              selectedType={selectedMeatType}
+              onTypeChange={setSelectedMeatType}
+              beefPrice={burger.beef_price}
+              chickenPrice={burger.chicken_price}
+            />
+          )}
 
           {/* Extras */}
-          {extras.length > 0 && (
+          {isBurgerOrCombo && extras.length > 0 && (
             <div className="mb-6">
               <h3 className="text-xl font-bold text-gray-800 mb-4">الإضافات المتاحة</h3>
               <div className="space-y-3">
@@ -173,13 +196,16 @@ const BurgerDetails: React.FC<BurgerDetailsProps> = ({ burger, isOpen, onClose }
             <button
               onClick={handleAddToCart}
               className={`w-full font-bold py-4 px-6 rounded-xl transition-all hover:scale-105 shadow-lg flex items-center justify-center gap-2 ${
-                selectedMeatType === 'beef' 
-                  ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white'
-                  : 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white'
+                isBurgerOrCombo
+                  ? selectedMeatType === 'beef' 
+                    ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white'
+                    : 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white'
+                  : 'bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white'
               }`}
             >
               <ShoppingCart className="w-5 h-5" />
-              إضافة للسلة ({quantity}) - {selectedMeatType === 'beef' ? 'لحم' : 'فراخ'}
+              إضافة للسلة ({quantity})
+              {isBurgerOrCombo && ` - ${selectedMeatType === 'beef' ? 'لحم' : 'فراخ'}`}
             </button>
           </div>
         </div>

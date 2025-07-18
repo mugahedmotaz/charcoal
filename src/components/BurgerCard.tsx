@@ -17,6 +17,9 @@ const BurgerCard: React.FC<BurgerCardProps> = ({ burger, onDetailsClick }) => {
     setIsLiked(!isLiked);
   };
 
+  // استخدم اسم الصنف للمقارنة
+  const catName = burger.category?.name;
+  const isBurgerOrCombo = catName === 'برجر' || catName === 'كومبو';
   return (
     <div 
       className="group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden cursor-pointer transform hover:-translate-y-3 border border-gray-100"
@@ -31,31 +34,22 @@ const BurgerCard: React.FC<BurgerCardProps> = ({ burger, onDetailsClick }) => {
           alt={burger.name}
           className="w-full h-56 object-cover transition-transform duration-700 group-hover:scale-110"
         />
-        
-        {/* Gradient Overlay */}
+        {/* ...existing code... */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        
-        {/* Top Badges */}
         <div className="absolute top-4 left-4 flex flex-col gap-2">
-          {burger.popular && (
+          {/* إذا كان المنتج مشهور أو جديد استخدم حقول is_popular و is_new */}
+          {burger.is_popular && (
             <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center shadow-lg animate-pulse">
               <Flame className="w-3 h-3 ml-1" />
               الأكثر مبيعاً
             </div>
           )}
-          {burger.new && (
+          {burger.is_new && (
             <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
               جديد
             </div>
           )}
-          {burger.originalPrice && (
-            <div className="bg-gradient-to-r from-yellow-400 to-orange-400 text-red-600 text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
-              خصم {Math.round((1 - burger.price / burger.originalPrice) * 100)}%
-            </div>
-          )}
         </div>
-
-        {/* Action Buttons */}
         <div className="absolute top-4 right-4 flex flex-col gap-2">
           <button
             onClick={handleLike}
@@ -67,7 +61,6 @@ const BurgerCard: React.FC<BurgerCardProps> = ({ burger, onDetailsClick }) => {
           >
             <Heart className={`w-4 h-4 ${isLiked ? 'fill-current' : ''}`} />
           </button>
-          
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -79,8 +72,6 @@ const BurgerCard: React.FC<BurgerCardProps> = ({ burger, onDetailsClick }) => {
             <Eye className="w-4 h-4" />
           </button>
         </div>
-
-        {/* View Details Button */}
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -96,17 +87,12 @@ const BurgerCard: React.FC<BurgerCardProps> = ({ burger, onDetailsClick }) => {
 
       {/* Content */}
       <div className="p-6">
-        {/* Title */}
         <h3 className="font-bold text-xl text-gray-800 mb-2 group-hover:text-red-600 transition-colors line-clamp-1">
           {burger.name}
         </h3>
-        
-        {/* Description */}
         <p className="text-gray-600 text-sm mb-4 leading-relaxed line-clamp-2 h-12">
           {burger.description}
         </p>
-
-        {/* Features */}
         <div className="flex items-center justify-between mb-4 text-xs">
           <div className="flex items-center gap-4 text-gray-500">
             <div className="flex items-center">
@@ -118,51 +104,57 @@ const BurgerCard: React.FC<BurgerCardProps> = ({ burger, onDetailsClick }) => {
               <span>4.{Math.floor(Math.random() * 3) + 6}</span>
             </div>
           </div>
-          
-          {/* Category Badge */}
           <div className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs font-medium">
-            {burger.category === 'burger' ? 'برجر' : 
-             burger.category === 'combo' ? 'كومبو' : 
-             burger.category === 'sides' ? 'إضافات' : 'مشروبات'}
+            {catName === 'برجر' ? 'برجر' : 
+             catName === 'كومبو' ? 'كومبو' : 
+             catName === 'إضافات' ? 'إضافات' : 'مشروبات'}
           </div>
         </div>
-
-        {/* Price and Add Button */}
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col">
-            <div className="text-right">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-lg font-bold text-red-600">
-                  {burger.beef_price}
-                </span>
-                <span className="text-xs text-gray-500">لحم</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-lg font-bold text-orange-600">
-                  {burger.chicken_price}
-                </span>
-                <span className="text-xs text-gray-500">فراخ</span>
+        {/* Price and Add Button: فقط للبرجر والكومبو تظهر أسعار اللحم والفراخ */}
+        {isBurgerOrCombo ? (
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col">
+              <div className="text-right">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-lg font-bold text-red-600">
+                    {burger.beef_price}
+                  </span>
+                  <span className="text-xs text-gray-500">لحم</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-lg font-bold text-orange-600">
+                    {burger.chicken_price}
+                  </span>
+                  <span className="text-xs text-gray-500">فراخ</span>
+                </div>
               </div>
             </div>
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                onDetailsClick(burger);
+              }}
+              className="bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg"
+            >
+              اختيار
+            </button>
           </div>
-          
-          <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              onDetailsClick(burger);
-            }}
-            className="bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg"
-          >
-            اختيار
-          </button>
-        </div>
+        ) : (
+          <div className="flex items-center justify-between">
+            <span className="text-lg font-bold text-red-600">{burger.beef_price}</span>
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                onDetailsClick(burger);
+              }}
+              className="bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg"
+            >
+              اختيار
+            </button>
+          </div>
+        )}
       </div>
-
-      {/* Hover Effect Border */}
-      {/* <div className="absolute inset-0 border-2 border-red-500 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" /> */}
-      
-      {/* Shine Effect */}
-      {/* <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" /> */}
+      {/* ...existing code... */}
     </div>
   );
 };

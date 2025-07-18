@@ -914,6 +914,7 @@ const AdminContent: React.FC = () => {
         </Tabs>
       </div>
     </div>
+    
   );
 };
 
