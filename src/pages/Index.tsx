@@ -53,25 +53,25 @@ const IndexContent: React.FC = () => {
   }
 
   // عرض رسالة الخطأ
-  if (categoriesError || productsError) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center bg-white p-8 rounded-lg shadow-lg">
-          <div className="text-red-500 text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">خطأ في تحميل البيانات</h2>
-          <p className="text-gray-600 mb-4">
-            {categoriesError || productsError}
-          </p>
-          <button 
-            onClick={() => window.location.reload()}
-            className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition-colors"
-          >
-            إعادة المحاولة
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // if (categoriesError || productsError) {
+  //   return (
+  //     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+  //       <div className="text-center bg-white p-8 rounded-lg shadow-lg">
+  //         <div className="text-red-500 text-6xl mb-4">⚠️</div>
+  //         <h2 className="text-2xl font-bold text-gray-800 mb-4">خطأ في تحميل البيانات</h2>
+  //         <p className="text-gray-600 mb-4">
+  //           {categoriesError || productsError}
+  //         </p>
+  //         <button 
+  //           onClick={() => window.location.reload()}
+  //           className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition-colors"
+  //         >
+  //           إعادة المحاولة
+  //         </button>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-gray-50">

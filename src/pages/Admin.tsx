@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Logo from "../components/logo.png";
 import { 
   Users, 
   Package, 
@@ -124,12 +125,15 @@ const AdminContent: React.FC = () => {
   const handleProductSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      // تحديد نوع الصنف المختار
+      const selectedCatObj = categories.find(cat => cat.id === productForm.category_id);
+      const isBurgerOrCombo = selectedCatObj && (selectedCatObj.name === 'برجر' || selectedCatObj.name === 'كومبو');
       const productData = {
         ...productForm,
         beef_price: parseFloat(productForm.beef_price),
-        chicken_price: parseFloat(productForm.chicken_price),
+        chicken_price: isBurgerOrCombo ? parseFloat(productForm.chicken_price) : null,
         original_beef_price: productForm.original_beef_price ? parseFloat(productForm.original_beef_price) : null,
-        original_chicken_price: productForm.original_chicken_price ? parseFloat(productForm.original_chicken_price) : null,
+        original_chicken_price: isBurgerOrCombo && productForm.original_chicken_price ? parseFloat(productForm.original_chicken_price) : null,
       };
 
       if (editingProduct) {
@@ -241,42 +245,44 @@ const AdminContent: React.FC = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Alert className="max-w-md">
-          <AlertDescription>
-            خطأ في تحميل البيانات: {error}
-            <Button onClick={refetch} className="mt-2 w-full">
-              إعادة المحاولة
-            </Button>
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+  //       <Alert className="max-w-md">
+  //         <AlertDescription>
+  //           خطأ في تحميل البيانات: {error}
+  //           <Button onClick={refetch} className="mt-2 w-full">
+  //             إعادة المحاولة
+  //           </Button>
+  //         </AlertDescription>
+  //       </Alert>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-4">
-              <div className="w-8 h-8 bg-gradient-to-r from-red-500 to-orange-500 rounded-lg flex items-center justify-center">
-                <Settings className="w-5 h-5 text-white" />
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center h-auto md:h-16 py-2 md:py-0 gap-2 md:gap-0">
+            <div className="flex items-center gap-2 md:gap-4 w-full md:w-auto justify-between md:justify-start">
+              <div className="flex items-center space-x-2 md:space-x-3">
+                <div className="relative">
+                  <div className="ml-2 w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <img src={Logo} alt="Logo" className="w-10 md:w-12" />
+                  </div>
+                </div>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">لوحة الإدارة</h1>
-                <p className="text-sm text-gray-500">شاركلز - بورتسودان</p>
+                <h1 className="text-lg md:text-xl text-gray-500">لوحة الإدارة</h1>
               </div>
             </div>
-            
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 md:gap-4 w-full md:w-auto justify-between md:justify-end">
               <Button
                 variant="outline"
                 onClick={() => navigate('/')}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 bg-gradient-to-tr from-red-500 to-orange-500 text-white hover:text-white text-xs md:text-base px-2 md:px-4"
               >
                 <Eye className="w-4 h-4" />
                 عرض الموقع
@@ -284,9 +290,9 @@ const AdminContent: React.FC = () => {
               <Button
                 variant="outline"
                 onClick={handleLogout}
-                className="flex items-center gap-2 text-red-600 hover:text-red-700"
+                className="flex items-center gap-2 text-red-600 hover:text-red-700 text-xs md:text-base px-2 md:px-4"
               >
-                <LogOut className="w-4 h-4" />
+                <LogOut className="w-4 h-4 text-red-600" />
                 تسجيل الخروج
               </Button>
             </div>
@@ -294,9 +300,9 @@ const AdminContent: React.FC = () => {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 md:py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 text-xs sm:text-base">
             <TabsTrigger value="dashboard">لوحة التحكم</TabsTrigger>
             <TabsTrigger value="products">المنتجات</TabsTrigger>
             <TabsTrigger value="categories">الأصناف</TabsTrigger>
@@ -309,7 +315,7 @@ const AdminContent: React.FC = () => {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">إجمالي المنتجات</CardTitle>
-                  <Package className="h-4 w-4 text-muted-foreground" />
+                  <Package className="h-4 w-4 text-muted-foreground text-orange-500" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{totalProducts}</div>
@@ -320,7 +326,7 @@ const AdminContent: React.FC = () => {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">إجمالي الطلبات</CardTitle>
-                  <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+                  <ShoppingCart className="h-4 w-4 text-muted-foreground  text-orange-500" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{totalOrders}</div>
@@ -331,7 +337,7 @@ const AdminContent: React.FC = () => {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">إجمالي المبيعات</CardTitle>
-                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                  <DollarSign className="h-4 w-4 text-muted-foreground  text-orange-500" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{totalRevenue.toLocaleString()} ج.س</div>
@@ -342,7 +348,7 @@ const AdminContent: React.FC = () => {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">الطلبات المعلقة</CardTitle>
-                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                  <TrendingUp className="h-4 w-4 text-muted-foreground  text-orange-500" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{pendingOrders}</div>
@@ -425,7 +431,7 @@ const AdminContent: React.FC = () => {
               
               <Dialog open={isProductDialogOpen} onOpenChange={setIsProductDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button onClick={resetProductForm} className="flex items-center gap-2">
+                  <Button onClick={resetProductForm} className="flex items-center gap-2 bg-gradient-to-tr from-red-500 to-orange-500">
                     <Plus className="w-4 h-4" />
                     إضافة منتج جديد
                   </Button>
@@ -481,53 +487,87 @@ const AdminContent: React.FC = () => {
                       />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="beef_price">سعر اللحم *</Label>
-                        <Input
-                          id="beef_price"
-                          type="number"
-                          step="0.01"
-                          value={productForm.beef_price}
-                          onChange={(e) => setProductForm({...productForm, beef_price: e.target.value})}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="chicken_price">سعر الفراخ *</Label>
-                        <Input
-                          id="chicken_price"
-                          type="number"
-                          step="0.01"
-                          value={productForm.chicken_price}
-                          onChange={(e) => setProductForm({...productForm, chicken_price: e.target.value})}
-                          required
-                        />
-                      </div>
-                    </div>
+                    {/* إظهار حقول الأسعار حسب نوع الصنف */}
+                    {(() => {
+                      const selectedCatObj = categories.find(cat => cat.id === productForm.category_id);
+                      if (selectedCatObj && (selectedCatObj.name === 'برجر' || selectedCatObj.name === 'كومبو')) {
+                        return (
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="beef_price">سعر اللحم *</Label>
+                              <Input
+                                id="beef_price"
+                                type="number"
+                                step="0.01"
+                                value={productForm.beef_price}
+                                onChange={(e) => setProductForm({...productForm, beef_price: e.target.value})}
+                                required
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="chicken_price">سعر الفراخ *</Label>
+                              <Input
+                                id="chicken_price"
+                                type="number"
+                                step="0.01"
+                                value={productForm.chicken_price}
+                                onChange={(e) => setProductForm({...productForm, chicken_price: e.target.value})}
+                                required
+                              />
+                            </div>
+                          </div>
+                        );
+                      } else if (selectedCatObj) {
+                        return (
+                          <div>
+                            <Label htmlFor="beef_price">سعر المنتج *</Label>
+                            <Input
+                              id="beef_price"
+                              type="number"
+                              step="0.01"
+                              value={productForm.beef_price}
+                              onChange={(e) => setProductForm({...productForm, beef_price: e.target.value})}
+                              required
+                            />
+                          </div>
+                        );
+                      }
+                      return null;
+                    })()}
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="original_beef_price">السعر الأصلي للحم (اختياري)</Label>
-                        <Input
-                          id="original_beef_price"
-                          type="number"
-                          step="0.01"
-                          value={productForm.original_beef_price}
-                          onChange={(e) => setProductForm({...productForm, original_beef_price: e.target.value})}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="original_chicken_price">السعر الأصلي للفراخ (اختياري)</Label>
-                        <Input
-                          id="original_chicken_price"
-                          type="number"
-                          step="0.01"
-                          value={productForm.original_chicken_price}
-                          onChange={(e) => setProductForm({...productForm, original_chicken_price: e.target.value})}
-                        />
-                      </div>
-                    </div>
+                    {/* إظهار حقول الأسعار الأصلية حسب نوع الصنف */}
+                    {(() => {
+                      const selectedCatObj = categories.find(cat => cat.id === productForm.category_id);
+                      if (selectedCatObj && (selectedCatObj.name === 'برجر' || selectedCatObj.name === 'كومبو')) {
+                        return (
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="original_beef_price">السعر الأصلي للحم (اختياري)</Label>
+                              <Input
+                                id="original_beef_price"
+                                type="number"
+                                step="0.01"
+                                value={productForm.original_beef_price}
+                                onChange={(e) => setProductForm({...productForm, original_beef_price: e.target.value})}
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="original_chicken_price">السعر الأصلي للفراخ (اختياري)</Label>
+                              <Input
+                                id="original_chicken_price"
+                                type="number"
+                                step="0.01"
+                                value={productForm.original_chicken_price}
+                                onChange={(e) => setProductForm({...productForm, original_chicken_price: e.target.value})}
+                              />
+                            </div>
+                          </div>
+                        );
+                      } else if (selectedCatObj) {
+                        return null;
+                      }
+                      return null;
+                    })()}
 
                     <div>
                       <Label htmlFor="image">رابط الصورة</Label>
@@ -571,7 +611,7 @@ const AdminContent: React.FC = () => {
                       <Button type="button" variant="outline" onClick={() => setIsProductDialogOpen(false)}>
                         إلغاء
                       </Button>
-                      <Button type="submit">
+                      <Button type="submit" className='bg-gradient-to-tr from-red-500 to-orange-500'>
                         {editingProduct ? 'تحديث' : 'إضافة'}
                       </Button>
                     </DialogFooter>
@@ -582,80 +622,90 @@ const AdminContent: React.FC = () => {
 
             <Card>
               <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>المنتج</TableHead>
-                      <TableHead>الصنف</TableHead>
-                      <TableHead>سعر اللحم</TableHead>
-                      <TableHead>سعر الفراخ</TableHead>
-                      <TableHead>الحالة</TableHead>
-                      <TableHead>الإجراءات</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredProducts.map((product) => (
-                      <TableRow key={product.id}>
-                        <TableCell>
-                          <div className="flex items-center gap-3">
-                            {product.image && (
-                              <img 
-                                src={product.image} 
-                                alt={product.name}
-                                className="w-10 h-10 rounded-lg object-cover"
-                              />
-                            )}
-                            <div>
-                              <p className="font-medium">{product.name}</p>
-                              <p className="text-sm text-gray-500 line-clamp-1">
-                                {product.description}
-                              </p>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          {product.category ? (
-                            <span className="flex items-center gap-1">
-                              {product.category.icon} {product.category.name}
-                            </span>
-                          ) : (
-                            <span className="text-gray-400">غير محدد</span>
-                          )}
-                        </TableCell>
-                        <TableCell>{product.beef_price} ج.س</TableCell>
-                        <TableCell>{product.chicken_price} ج.س</TableCell>
-                        <TableCell>
-                          <div className="flex gap-1">
-                            {product.is_popular && <Badge variant="secondary">مشهور</Badge>}
-                            {product.is_new && <Badge variant="default">جديد</Badge>}
-                            <Badge variant={product.is_active ? "default" : "secondary"}>
-                              {product.is_active ? 'نشط' : 'غير نشط'}
-                            </Badge>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleEditProduct(product)}
-                            >
-                              <Edit className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleDeleteProduct(product.id)}
-                              className="text-red-600 hover:text-red-700"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
+                <div className="overflow-x-auto">
+                  <Table className="min-w-[600px] text-xs sm:text-base">
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>المنتج</TableHead>
+                        <TableHead>الصنف</TableHead>
+                        <TableHead>السعر</TableHead>
+                        <TableHead>الحالة</TableHead>
+                        <TableHead>الإجراءات</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredProducts.map((product) => {
+                        const catName = product.category?.name;
+                        let priceDisplay = '';
+                        if (catName === 'برجر' || catName === 'كومبو') {
+                          priceDisplay = `لحم: ${product.beef_price} ج.س`;
+                          if (product.chicken_price) priceDisplay += ` | فراخ: ${product.chicken_price} ج.س`;
+                        } else {
+                          priceDisplay = `${product.beef_price} ج.س`;
+                        }
+                        return (
+                          <TableRow key={product.id}>
+                            <TableCell>
+                              <div className="flex items-center gap-2 sm:gap-3">
+                                {product.image && (
+                                  <img 
+                                    src={product.image} 
+                                    alt={product.name}
+                                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover"
+                                  />
+                                )}
+                                <div>
+                                  <p className="font-medium text-xs sm:text-base">{product.name}</p>
+                                  <p className="text-xs sm:text-sm text-gray-500 line-clamp-1">
+                                    {product.description}
+                                  </p>
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              {product.category ? (
+                                <span className="flex items-center gap-1">
+                                  {product.category.icon} {product.category.name}
+                                </span>
+                              ) : (
+                                <span className="text-gray-400">غير محدد</span>
+                              )}
+                            </TableCell>
+                            <TableCell>{priceDisplay}</TableCell>
+                            <TableCell>
+                              <div className="flex gap-1">
+                                {product.is_popular && <Badge variant="secondary">مشهور</Badge>}
+                                {product.is_new && <Badge variant="default">جديد</Badge>}
+                                <Badge variant={product.is_active ? "default" : "secondary"}>
+                                  {product.is_active ? 'نشط' : 'غير نشط'}
+                                </Badge>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-1 sm:gap-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleEditProduct(product)}
+                                >
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleDeleteProduct(product.id)}
+                                  className="text-red-600 hover:text-red-700"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -667,7 +717,7 @@ const AdminContent: React.FC = () => {
               
               <Dialog open={isCategoryDialogOpen} onOpenChange={setIsCategoryDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button onClick={resetCategoryForm} className="flex items-center gap-2">
+                  <Button onClick={resetCategoryForm} className="flex items-center gap-2 bg-gradient-to-tr from-red-500 to-orange-500">
                     <Plus className="w-4 h-4" />
                     إضافة صنف جديد
                   </Button>
@@ -712,6 +762,7 @@ const AdminContent: React.FC = () => {
 
                     <div className="flex items-center space-x-2">
                       <Switch
+                      className=''
                         id="cat_is_active"
                         checked={categoryForm.is_active}
                         onCheckedChange={(checked) => setCategoryForm({...categoryForm, is_active: checked})}
@@ -720,10 +771,10 @@ const AdminContent: React.FC = () => {
                     </div>
 
                     <DialogFooter>
-                      <Button type="button" variant="outline" onClick={() => setIsCategoryDialogOpen(false)}>
+                      <Button type="button" variant="outline" onClick={() => setIsCategoryDialogOpen(false)} className=''>
                         إلغاء
                       </Button>
-                      <Button type="submit">
+                      <Button type="submit" className='bg-gradient-to-tr from-red-500 to-orange-500'>
                         {editingCategory ? 'تحديث' : 'إضافة'}
                       </Button>
                     </DialogFooter>
@@ -783,7 +834,7 @@ const AdminContent: React.FC = () => {
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">إدارة الطلبات</h2>
               <Button onClick={refetchOrders} variant="outline" className="flex items-center gap-2">
-                <RefreshCw className="w-4 h-4" />
+                <RefreshCw className="w-4 h-4 text-orange-500" />
                 تحديث
               </Button>
             </div>
@@ -797,7 +848,7 @@ const AdminContent: React.FC = () => {
                   </div>
                 ) : orders.length === 0 ? (
                   <div className="text-center py-8">
-                    <ShoppingCart className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                    <ShoppingCart className="w-12 h-12 mx-auto mb-4 text-orange-500" />
                     <p className="text-lg text-gray-600">لا توجد طلبات حتى الآن</p>
                     <p className="text-sm text-gray-500">ستظهر الطلبات هنا عند استلامها</p>
                   </div>
