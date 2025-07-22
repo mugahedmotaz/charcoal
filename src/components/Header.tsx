@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShoppingCart, Search, Menu, X, Settings, Bell, User } from 'lucide-react';
+import { ShoppingCart, Search, Menu, X, Settings, Bell, User, PartyPopper,  MenuSquare, Phone,Home } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import Logo from "../components/logo.png"
 
@@ -28,21 +28,19 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
           {/* Logo Section */}
           <div className="flex items-center space-x-3">
             <div className="relative">
-              <div className=" ml-2 w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+              <div className=" ml-2 w-12 h-12 bg-gradient-to-tr from-red-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
                 <img src={Logo} alt="Logo" className="w-12" />
               </div>
-              <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full animate-pulse"></div>
+              {/* <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full animate-pulse"></div> */}
             </div>
             <div className="hidden md:block">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
-                شاركلز
-              </h1>
-              <p className="text-sm text-gray-500 font-medium">بورتسودان</p>
+              
+              <p className=" text-gray-700 font-medium">  شاركلز - بورتسودان</p>
             </div>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
+          <nav className="hidden lg:flex items-center  ">
             {[
               { name: 'الرئيسية', href: '/#home', active: true },
               { name: 'القائمة', href: '/#menu' },
@@ -52,7 +50,7 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
               <a
                 key={item.name}
                 href={item.href}
-                className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                className={`relative px-4 py-2  mx-2 rounded-lg font-medium transition-all duration-300 ${
                   item.active
                     ? 'text-red-600 bg-red-50'
                     : 'text-gray-700 hover:text-red-600 hover:bg-gray-50'
@@ -150,10 +148,10 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
             {/* Mobile Navigation */}
             <nav className="space-y-2">
               {[
-                { name: 'الرئيسية', href: '#home', icon: '🏠' },
-                { name: 'القائمة', href: '#menu', icon: '📋' },
-                { name: 'العروض', href: '#offers', icon: '🎉' },
-                { name: 'اتصل بنا', href: '#contact', icon: '📞' }
+                { name: 'الرئيسية', href: '#home', icon: <Home   className='bg-gradient-to-tr from-red-500 to-orange-500 w-8 h-8  p-2 rounded-md text-white'/> },
+                { name: 'القائمة', href: '#menu', icon: <Menu  className='bg-gradient-to-tr from-red-500 to-orange-500 w-8 h-8  p-2 rounded-md text-white'/>  },
+                { name: 'العروض', href: '#offers', icon: <MenuSquare  className='bg-gradient-to-tr from-red-500 to-orange-500 w-8 h-8 p-2 rounded-md text-white' /> },
+                { name: 'اتصل بنا', href: '#contact', icon: <Phone   className='bg-gradient-to-tr from-red-500 to-orange-500 w-8 h-8 p-2 rounded-md text-white'/> }
               ].map((item) => (
                 <a
                   key={item.name}

@@ -166,6 +166,16 @@ const IndexContent: React.FC = () => {
         </section>
       </main>
 
+ <div className="text-center my-8">
+<div className="bg-white rounded-lg py-10  p-8 ">
+            <h2 className="text-3xl font-bold text-gray-800 mb-14">
+                موقعنا
+            </h2>
+                <iframe className='rounded-lg' src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.019287758065!2d144.9630579153168!3d-37.81410797975195!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0xf577d1b6e6e1e0e!2sFederation%20Square!5e0!3m2!1sen!2sau!4v1614311234567!5m2!1sen!2sau" width="100%" height="450"  loading="lazy"></iframe>
+          </div>
+            </div>
+
+
       {/* Footer */}
       <footer className="bg-white text-gray-800 py-10 border-t">
         <div className="container mx-auto px-4 text-center">

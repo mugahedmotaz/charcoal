@@ -16,7 +16,7 @@ const HeroSection: React.FC = () => {
           {/* Text Content */}
           <div className="text-center lg:text-right space-y-8">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg my-2">
+            <div className=" m-1 inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg my-2">
               <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
               <span className="text-sm font-medium text-gray-700">الطلب غير متاح الآن</span>
             </div>
@@ -41,7 +41,7 @@ const HeroSection: React.FC = () => {
                   <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-red-500 to-orange-500 rounded-full"></div>
                 </span>
               </h1>
-              <p className="text-xl lg:text-2xl text-gray-600 leading-relaxed max-w-2xl">
+              <p className="text-xl lg:text-2xl text-gray-600 leading-relaxed max-w-2xl pt-4">
                 اكتشف طعم البرجر الأصيل مع وصفاتنا السرية والمكونات الطازجة المختارة بعناية
               </p>
             </div>
