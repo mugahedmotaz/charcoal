@@ -3,8 +3,11 @@ import { Link } from 'react-router-dom';
 import HeroSection from '../components/HeroSection';
 import { useProducts } from '../hooks/useSupabase';
 import Header from '../components/Header';
-import Logo from '../components/logo.png';
-import { Facebook, Instagram, Drumstick, Flame, FlaskConical, Zap, Star, Lock, Leaf, Truck } from 'lucide-react';
+import SiteFooter from '../components/SiteFooter';
+import { Drumstick, Flame, FlaskConical, Zap, Star, Lock, Leaf, Truck, Gift, Tag, GraduationCap } from 'lucide-react';
+import VideoFeed from '../components/VideoFeed';
+import ImageWithPlaceholder from '../components/ImageWithPlaceholder';
+import  My from '../components/my.jpg';
 
 // صورة بديلة عامة عند فشل التحميل من رابط مباشر ثابت
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=800&auto=format&fit=crop';
@@ -65,6 +68,42 @@ const Home: React.FC = () => {
     'https://images.unsplash.com/photo-1571091718767-18b5b1457add?q=80&w=1400&auto=format&fit=crop'
   ];
 
+  // عروض حالية
+  const offers = [
+    {
+      title: 'جوسي شارلي',
+      desc: 'اطلب 3 واحصل علي شيبس مجانا',
+      badge: 'لفترة محدودة',
+      color: 'from-red-500 to-orange-500',
+    },
+    {
+      title: ' مجانًا يوم الاثنين',
+      desc: ' التوصيل مجاني',
+      badge: 'كل اثنين',
+      color: 'from-amber-500 to-yellow-500',
+    },
+  ];
+
+  // فيديوهات قصيرة (نمط تيك توك)
+  const videoFeedItems = [
+    {
+      // مصدر عام ومستقر لمقاطع قصيرة
+      srcMp4: 'https://cdn.coverr.co/videos/coverr-a-burger-being-fried-8791/1080p.mp4',
+      srcWebm: 'https://cdn.coverr.co/videos/coverr-a-burger-being-fried-8791/1080p.webm',
+      caption: 'تحمير البرجر على النار الحامية 🔥',
+    },
+    {
+      srcMp4: 'https://cdn.coverr.co/videos/coverr-preparing-burger-1080p-2412/1080p.mp4',
+      srcWebm: 'https://cdn.coverr.co/videos/coverr-preparing-burger-1080p-2412/1080p.webm',
+      caption: 'تحضير سريع ومكونات طازجة 🥬🧀',
+    },
+    {
+      srcMp4: 'https://cdn.coverr.co/videos/coverr-juicy-burger-1080p-2523/1080p.mp4',
+      srcWebm: 'https://cdn.coverr.co/videos/coverr-juicy-burger-1080p-2523/1080p.webm',
+      caption: 'عصارة لا تُقاوم 🤤',
+    },
+  ];
+
   const handleImgError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     const img = e.currentTarget;
     if (img.src !== FALLBACK_IMG) {
@@ -84,7 +123,7 @@ const Home: React.FC = () => {
 
   // آراء العملاء (Testimonials)
   const testimonials = [
-    { name: 'أحمد', role: 'عميل دائم', rating: 5, text: 'أفضل برجر ذقته! النكهة متوازنة واللحم طازج جدًا.', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=300&auto=format&fit=crop' },
+    { name: 'مجاهد', role: 'عميل دائم', rating: 5, text: 'أفضل برجر ذقته! النكهة متوازنة واللحم طازج جدًا.', avatar: My },
     { name: 'سارة', role: 'Food blogger', rating: 5, text: 'التجربة رائعة من البداية للنهاية. عرض وتغليف ممتاز.', avatar: 'https://images.unsplash.com/photo-1544005314-0a7f8eaaae1d?q=80&w=300&auto=format&fit=crop' },
     { name: 'محمد', role: 'زبون جديد', rating: 4, text: 'السعر مناسب والجودة ممتازة. سأكرر الطلب بالتأكيد.', avatar: 'https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=300&auto=format&fit=crop' },
   ];
@@ -131,6 +170,39 @@ const Home: React.FC = () => {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Offers Section */}
+      <section className="py-16 bg-white dark:bg-zinc-950 border-t border-gray-100 dark:border-zinc-800">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-10">
+            <h2 className="text-4xl font-bold text-gray-800 dark:text-white mb-3">عروضنا</h2>
+            <p className="text-gray-600 dark:text-gray-300">أفضل العروض لفترة محدودة – لا تفوّت الفرصة!</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {offers.map((o, i) => (
+              <div key={i} className="relative group">
+                <div className={`p-[1px] rounded-2xl bg-gradient-to-br ${o.color} shadow-xl transition-transform duration-300 group-hover:translate-y-[-2px]`}>
+                  <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 border border-white/20 dark:border-zinc-800">
+                    <div className="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-white/10 dark:bg-white/5 opacity-20"></div>
+                    <div className="p-6 relative">
+                      <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gray-50 dark:bg-zinc-800 text-gray-700 dark:text-gray-200">
+                        {i === 0 ? <Gift className="w-5 h-5" /> : i === 1 ? <Tag className="w-5 h-5" /> : <GraduationCap className="w-5 h-5" />}          
+                      </div>
+                      <span className="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 mb-3">{o.badge}</span>
+                      <h3 className="text-xl font-extrabold text-gray-800 dark:text-white mb-2">{o.title}</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">{o.desc}</p>
+                      <Link to="/order" className="inline-flex items-center gap-2 text-red-600 hover:text-orange-600 font-semibold">
+                        اطلب العرض الآن
+                        <span aria-hidden>→</span>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -298,14 +370,11 @@ const Home: React.FC = () => {
                 <div key={i} className="snap-center shrink-0 w-80 md:w-[28rem]">
                   <div className="h-full bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-2xl shadow-sm p-6 hover:shadow-md transition-shadow">
                     <div className="flex items-center gap-4 mb-4">
-                      <img
-                        src={t.avatar}
+                      <ImageWithPlaceholder
+                        src={t.avatar as any}
                         alt={t.name}
                         className="w-12 h-12 rounded-full object-cover"
-                        loading="lazy"
-                        decoding="async"
-                        referrerPolicy="no-referrer"
-                        onError={(e) => { const img = e.currentTarget as HTMLImageElement; if (img.src !== FALLBACK_IMG) img.src = FALLBACK_IMG; }}
+                        wrapperClassName="w-12 h-12"
                       />
                       <div>
                         <div className="font-bold text-gray-800 dark:text-white">{t.name}</div>
@@ -329,6 +398,19 @@ const Home: React.FC = () => {
       </section>
 
       {/* Recommended section removed as requested */}
+
+      {/* Short Video Feed (TikTok-like) */}
+      <section className="py-16 bg-gray-50 dark:bg-zinc-950">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-10">
+            <h2 className="text-4xl font-bold text-gray-800 dark:text-white mb-3">فيديوهات قصيرة</h2>
+            <p className="text-gray-600 dark:text-gray-300">لقطات سريعة لأبرز التحضيرات والملحّات الشهية</p>
+          </div>
+          <div className="max-w-5xl mx-auto">
+            <VideoFeed videos={videoFeedItems} />
+          </div>
+        </div>
+      </section>
 
       {/* Photo Gallery (Masonry) */}
       <section className="py-16 bg-white">
@@ -438,67 +520,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Logo and Description */}
-            <div className="col-span-1 md:col-span-2">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                  <img src={Logo} alt="Logo" className="w-8" />
-                </div>
-                <div className="mr-3">
-                  <h1 className="text-2xl font-bold text-white">
-                    شاركلز
-                  </h1>
-                  <p className="text-gray-400">بورتسودان</p>
-                </div>
-              </div>
-              <p className="text-gray-300 mb-6 max-w-md">
-                أفضل برجر في بورتسودان. طعم لا يُنسى مع كل قضمة. نقدم لك تجربة طعام استثنائية بأجود المكونات وأفضل الخدمات.
-              </p>
-              <div className="flex items-center gap-4">
-                <a href="#" className="bg-blue-600 p-2 rounded-lg hover:bg-blue-700 transition" aria-label="Facebook">
-                  <Facebook className="w-5 h-5" />
-                </a>
-                <a href="#" className="bg-pink-600 p-2 rounded-lg hover:bg-pink-700 transition" aria-label="Instagram">
-                  <Instagram className="w-5 h-5" />
-                </a>
-              </div>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <h3 className="text-lg font-bold mb-4">روابط سريعة</h3>
-              <ul className="space-y-2">
-                <li><a href="/" className="text-gray-300 hover:text-white transition">الرئيسية</a></li>
-                <li><a href="/about" className="text-gray-300 hover:text-white transition">من نحن</a></li>
-                <li><a href="/contact" className="text-gray-300 hover:text-white transition">اتصل بنا</a></li>
-              </ul>
-            </div>
-
-            {/* Contact Info */}
-            <div>
-              <h3 className="text-lg font-bold mb-4">تواصل معنا</h3>
-              <ul className="space-y-2 text-gray-300 text-sm">
-                <li>📍 بورتسودان، السودان</li>
-                <li>📞 +249 123 456 789</li>
-                <li>✉️ info@charcoals.sd</li>
-                <li>🕒 9:00 ص - 12:00 م</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-sm">
-            <p className="text-gray-400">
-              © 2024 Charcoal's. جميع الحقوق محفوظة.
-            </p>
-            <p className="text-gray-400 mt-2">
-              Development by <span className="text-red-400 font-bold">Mugahed Motaz</span>
-            </p>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
       {/* Bottom Sticky CTA */}
       <div className="fixed inset-x-0 bottom-4 z-40 px-4 md:px-0">
         <div className="mx-auto max-w-3xl bg-white/90 dark:bg-zinc-900/90 backdrop-blur-lg border border-gray-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-4 flex items-center justify-between gap-4">

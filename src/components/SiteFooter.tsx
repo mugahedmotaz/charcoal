@@ -28,6 +28,18 @@ const SiteFooter: React.FC = () => (
             <a href="#" className="inline-flex items-center justify-center w-9 h-9 rounded-lg ring-1 ring-white/10 hover:ring-white/20 bg-white/5 hover:bg-white/10 transition" aria-label="Instagram">
               <Instagram className="w-4.5 h-4.5" />
             </a>
+            <a href="#" className="inline-flex items-center justify-center w-9 h-9 rounded-lg ring-1 ring-white/10 hover:ring-white/20 bg-white/5 hover:bg-white/10 transition" aria-label="TikTok">
+              <img
+                src="https://cdn.simpleicons.org/tiktok/FFFFFF"
+                alt="TikTok"
+                title="TikTok"
+                className="w-5 h-5 object-contain"
+                loading="lazy"
+                decoding="async"
+                referrerPolicy="no-referrer"
+                onError={(e) => { (e.currentTarget as HTMLImageElement).style.visibility = 'hidden'; }}
+              />
+            </a>
           </div>
         </div>
 
