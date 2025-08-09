@@ -1,7 +1,34 @@
-import React from 'react';
-import { Clock, Star, Truck, Play, ArrowLeft } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Clock, Star, Truck, Play, Pause, ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const HeroSection: React.FC = () => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    const attempt = v.play();
+    if (attempt && typeof (attempt as Promise<void>).then === 'function') {
+      (attempt as Promise<void>).then(() => setIsPlaying(!v.paused)).catch(() => setIsPlaying(false));
+    } else {
+      setIsPlaying(!v.paused);
+    }
+  }, []);
+
+  const handleToggleVideo = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (v.paused) {
+      v.play();
+      setIsPlaying(true);
+    } else {
+      v.pause();
+      setIsPlaying(false);
+    }
+  };
+
   return (
     <section className="relative min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 overflow-hidden">
       {/* Background Elements */}
@@ -38,10 +65,10 @@ const HeroSection: React.FC = () => {
                   <span className="bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
                     في بورتسـودان
                   </span>
-                  <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-red-500 to-orange-500 rounded-full"></div>
+                  <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-red-500 to-orange-500 rounded-full"></div>
                 </span>
               </h1>
-              <p className="text-xl lg:text-2xl text-gray-600 leading-relaxed max-w-2xl pt-4">
+              <p className="text-xl mt-4 lg:text-2xl text-gray-600 leading-relaxed max-w-2xl pt-4">
                 اكتشف طعم البرجر الأصيل مع وصفاتنا السرية والمكونات الطازجة المختارة بعناية
               </p>
             </div>
@@ -63,16 +90,20 @@ const HeroSection: React.FC = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <button className="group bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 hover:scale-105 shadow-xl hover:shadow-2xl">
-                <div className="flex items-center justify-center gap-3">
+              <Link to="/order" className="group inline-flex items-center justify-center bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 hover:scale-105 shadow-xl hover:shadow-2xl">
+                <span className="flex items-center gap-3">
                   <span>اطلب الآن</span>
                   <ArrowLeft className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </button>
+                </span>
+              </Link>
               
-              <button className="group flex items-center justify-center gap-3 border-2 border-gray-300 hover:border-red-500 text-gray-700 hover:text-red-600 font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 hover:scale-105 bg-white/80 backdrop-blur-sm">
-                <Play className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                <span>شاهد الفيديو</span>
+              <button onClick={handleToggleVideo} className="group flex items-center justify-center gap-3 border-2 border-gray-300 hover:border-red-500 text-gray-700 hover:text-red-600 font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 hover:scale-105 bg-white/80 backdrop-blur-sm">
+                {isPlaying ? (
+                  <Pause className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                ) : (
+                  <Play className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                )}
+                <span>{isPlaying ? 'أوقف الفيديو' : 'شغّل الفيديو'}</span>
               </button>
             </div>
 
@@ -93,16 +124,25 @@ const HeroSection: React.FC = () => {
             </div>
           </div>
 
-          {/* Hero Image */}
+          {/* Hero Media (Video) */}
           <div className="relative">
             <div className="relative z-10">
-              {/* Main Image */}
+              {/* Main Video */}
               <div className="relative group">
-                <img 
-                  src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=600&h=600&fit=crop"
-                  alt="برجر لذيذ"
+                <video
+                  ref={videoRef}
                   className="w-full h-96 lg:h-[500px] object-cover rounded-3xl shadow-2xl transform group-hover:scale-105 transition-transform duration-500"
-                />
+                  poster="/images/hero-poster.svg"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  aria-label="فيديو برجر في الهيرو"
+                >
+                  <source src="/videos/hero.webm" type="video/webm" />
+                  <source src="/videos/hero.mp4" type="video/mp4" />
+                </video>
                 
                 {/* Floating Elements */}
                 <div className="absolute -top-6 -right-6 bg-white rounded-2xl p-4 shadow-xl animate-float">
@@ -134,12 +174,7 @@ const HeroSection: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Play Button Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <button className="bg-white/90 backdrop-blur-sm rounded-full p-6 shadow-xl hover:scale-110 transition-transform">
-                    <Play className="w-8 h-8 text-red-600 fill-current" />
-                  </button>
-                </div>
+                {/* Video auto-plays; no overlay button needed */}
               </div>
             </div>
 
@@ -157,7 +192,7 @@ const HeroSection: React.FC = () => {
         </svg>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes blob {
           0% { transform: translate(0px, 0px) scale(1); }
           33% { transform: translate(30px, -50px) scale(1.1); }

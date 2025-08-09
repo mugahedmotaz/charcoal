@@ -1,5 +1,8 @@
 
 import React, { useState } from 'react';
+// صور افتراضية وروابط fallback مباشرة
+const FALLBACK_IMG = 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=800&auto=format&fit=crop';
+const DEFAULT_PRODUCT_IMG = 'https://images.unsplash.com/photo-1551782450-17144c3a09b7?q=80&w=1400&auto=format&fit=crop';
 import { X, Plus, Minus, ShoppingCart, Star, Clock } from 'lucide-react';
 import { BurgerItem, BurgerExtra } from '../types/database';
 import { useCart } from '../contexts/CartContext';
@@ -64,9 +67,13 @@ const BurgerDetails: React.FC<BurgerDetailsProps> = ({ burger, isOpen, onClose }
         {/* Header */}
         <div className="relative">
           <img 
-            src={burger.image} 
+            src={burger.image || DEFAULT_PRODUCT_IMG} 
             alt={burger.name}
             className="w-full h-64 object-cover rounded-t-3xl"
+            loading="lazy"
+            decoding="async"
+            referrerPolicy="no-referrer"
+            onError={(e) => { const img = e.currentTarget as HTMLImageElement; if (img.src !== FALLBACK_IMG) img.src = FALLBACK_IMG; }}
           />
           <button
             onClick={onClose}

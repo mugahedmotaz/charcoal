@@ -4,7 +4,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Index from "./pages/Index";
+import Home from "./pages/Home";
+import Order from "./pages/Order";
 import Admin from "./pages/Admin";
 import AdminLogin from './pages/AdminLogin';
 import NotFound from "./pages/NotFound";
@@ -26,7 +27,8 @@ const App = () => (
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/order" element={<Order />} />
 
             {/* صفحة تسجيل دخول المشرف */}
             <Route path="/admin/login" element={<AdminLogin />} />

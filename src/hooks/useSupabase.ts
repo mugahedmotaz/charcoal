@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { Category, BurgerItem, BurgerExtra, Order } from '../types/database';
+import { localCategories, localProducts, localExtras } from '../data/local';
+
+const useLocal = (import.meta as any).env?.VITE_USE_LOCAL_DATA === 'true';
 
 // Hook للحصول على الأصناف
 export const useCategories = () => {
@@ -16,6 +19,11 @@ export const useCategories = () => {
     try {
       setLoading(true);
       setError(null);
+      if (useLocal) {
+        // Local mock
+        setCategories(localCategories.filter(c => c.is_active !== false));
+        return;
+      }
       const { data, error } = await supabase
         .from('categories')
         .select('*')
@@ -49,6 +57,15 @@ export const useProducts = (categoryId?: string) => {
     try {
       setLoading(true);
       setError(null);
+      if (useLocal) {
+        // Local mock with filtering
+        let data = localProducts.filter(p => p.is_active !== false);
+        if (categoryId && categoryId !== 'all') {
+          data = data.filter(p => p.category_id === categoryId);
+        }
+        setProducts(data);
+        return;
+      }
       let query = supabase
         .from('products')
         .select(`
@@ -91,6 +108,10 @@ export const useExtras = () => {
     try {
       setLoading(true);
       setError(null);
+      if (useLocal) {
+        setExtras(localExtras.filter(e => e.is_active !== false));
+        return;
+      }
       const { data, error } = await supabase
         .from('extras')
         .select('*')

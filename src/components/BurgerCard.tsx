@@ -3,6 +3,10 @@ import { Plus, Star, Clock, Flame, Heart, Eye } from 'lucide-react';
 import { BurgerItem } from '../types/database';
 import { useCart } from '../contexts/CartContext';
 
+// صور افتراضية وروابط fallback مباشرة
+const FALLBACK_IMG = 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=800&auto=format&fit=crop';
+const DEFAULT_PRODUCT_IMG = 'https://images.unsplash.com/photo-1551782450-17144c3a09b7?q=80&w=1400&auto=format&fit=crop';
+
 interface BurgerCardProps {
   burger: BurgerItem;
   onDetailsClick: (burger: BurgerItem) => void;
@@ -30,9 +34,13 @@ const BurgerCard: React.FC<BurgerCardProps> = ({ burger, onDetailsClick }) => {
       {/* Image Container */}
       <div className="relative overflow-hidden rounded-t-3xl">
         <img 
-          src={burger.image} 
+          src={burger.image || DEFAULT_PRODUCT_IMG} 
           alt={burger.name}
           className="w-full h-56 object-cover transition-transform duration-700 group-hover:scale-110"
+          loading="lazy"
+          decoding="async"
+          referrerPolicy="no-referrer"
+          onError={(e) => { const img = e.currentTarget as HTMLImageElement; if (img.src !== FALLBACK_IMG) img.src = FALLBACK_IMG; }}
         />
         {/* ...existing code... */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

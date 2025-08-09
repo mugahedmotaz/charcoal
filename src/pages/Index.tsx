@@ -76,10 +76,7 @@ const IndexContent: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <Header 
-        onCartClick={() => setIsCartOpen(true)}
-        onSearchChange={setSearchQuery}
-      />
+      <Header />
 
       {/* Hero Section */}
       <HeroSection />

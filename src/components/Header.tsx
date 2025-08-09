@@ -1,25 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShoppingCart, Search, Menu, X, Settings, Bell, User, PartyPopper,  MenuSquare, Phone,Home } from 'lucide-react';
-import { useCart } from '../contexts/CartContext';
+import { Menu, X, Settings, Bell, User, PartyPopper,  MenuSquare, Phone,Home } from 'lucide-react';
 import Logo from "../components/logo.png"
 
 interface HeaderProps {
-  onCartClick: () => void;
-  onSearchChange: (query: string) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
-  const { totalItems } = useCart();
+const Header: React.FC<HeaderProps> = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-    onSearchChange(query);
-  };
+  
 
   return (
     <header className="bg-white shadow-lg border-b border-gray-100 sticky top-0 z-40">
@@ -64,22 +54,11 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
             ))}
           </nav>
 
-          {/* Search Bar */}
-          <div className="hidden md:flex items-center relative">
-            <div className="relative group">
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-red-500 transition-colors" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={handleSearchChange}
-                placeholder="ابحث عن البرجر المفضل..."
-                className="w-80 pl-4 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300 text-right"
-              />
-            </div>
-          </div>
+          {/* Search Bar removed for cleaner marketing header */}
 
           {/* Action Buttons */}
           <div className="flex items-center space-x-4">
+
             {/* Notifications */}
             {/* <button className="relative p-3 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300"> */}
               {/* <Bell className="w-6 h-6" /> */}
@@ -95,21 +74,8 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
               الإدارة
             </button> */}
 
-            {/* Cart Button */}
-            <button
-              onClick={onCartClick}
-              className="relative bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white px-6 py-3 rounded-xl font-bold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl ml-4"
-            >
-              <div className="flex items-center gap-2">
-                <ShoppingCart className="w-5 h-5" />
-                <span className="hidden sm:inline">السلة</span>
-              </div>
-              {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-yellow-400 text-red-600 text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-bounce shadow-lg">
-                  {totalItems}
-                </span>
-              )}
-            </button>
+            {/* Cart Button removed: using floating button on Order page */}
+            
 
             {/* Profile */}
             {/* <button className="hidden md:flex items-center gap-2 p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300">
@@ -131,19 +97,7 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onSearchChange }) => {
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="lg:hidden border-t border-gray-100 py-4 animate-in slide-in-from-top-2 duration-300">
-            {/* Mobile Search */}
-            <div className="mb-4">
-              <div className="relative">
-                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                  placeholder="ابحث..."
-                  className="w-full pl-4 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-right"
-                />
-              </div>
-            </div>
+            {/* Mobile Search removed */}
 
             {/* Mobile Navigation */}
             <nav className="space-y-2">
